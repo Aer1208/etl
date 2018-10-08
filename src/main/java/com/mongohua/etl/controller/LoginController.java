@@ -41,7 +41,7 @@ public class LoginController {
             }
             result.put("ret", true);
         }catch(Exception ex){
-            result.put("msg", ex.getCause().getMessage());
+            result.put("msg", ex.getMessage());
             result.put("ret", false);
         }
 

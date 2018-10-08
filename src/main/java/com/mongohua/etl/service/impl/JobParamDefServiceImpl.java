@@ -78,7 +78,7 @@ public class JobParamDefServiceImpl implements JobParamDefService {
 
             return "{\"deletedCnt\":" + deletedCnt + ",\"updatedCnt\":" + updatedCnt + ",\"insertedCnt\":" + insertedCnt + ",\"status\":0}";
         }catch (Exception e) {
-            return "{\"ret\":\"" + e.getCause().getMessage() + "\",\"status\":-1}";
+            return "{\"ret\":\"" + e.getMessage() + "\",\"status\":-1}";
         }
     }
 }

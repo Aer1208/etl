@@ -156,7 +156,7 @@ public class JobDefServiceImpl implements JobDefService {
 
             return "{\"addJobCnt\":" + addJobCnt + ",\"addjobParamCnt\":" + addjobParamCnt + ",\"addjobRefCnt\":" + addjobRefCnt + ",\"status\":0}";
         }catch (Exception e) {
-            return "{\"ret\":\"" + e.getCause().getMessage() + "\",\"status\":-1}";
+            return "{\"ret\":\"" + e.getMessage() + "\",\"status\":-1}";
         }
     }
 
