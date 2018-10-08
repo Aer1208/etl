@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.mongohua.etl.SpringBootTest
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.493 sec - in com.mongohua.etl.SpringBootTest
