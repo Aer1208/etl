@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" href="../../css/default.css" th:href="@{/css/default.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/default/easyui.css" th:href="@{/easyui/themes/default/easyui.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css" th:href="@{/easyui/themes/icon.css}"/>
+    <script type="text/javascript" src="../../easyui/jquery-1.4.4.min.js" th:src="@{/easyui/jquery-1.4.4.min.js}"></script>
+    <script type="text/javascript" src="../../easyui/jquery.easyui.min.1.2.2.js" th:src="@{/easyui/jquery.easyui.min.1.2.2.js}"></script>
+    <script type="text/javascript" src="../../js/common.js" th:src="@{/js/common.js}"></script>
+    <script type="text/javascript" src="../../js/job_inst_list.js" th:src="@{/js/job_inst_list.js}"></script>
+    <title>普通作业运行情况监控列表</title>
+</head>
+<body>
+
+<table id="tt" class="easyui-datagrid" >
+</table>
+
+<div id ="dom_var_window">
+    <table id="jobtt" class="easyui-datagrid"></table>
+</div>
+
+<div id="child_job_window">
+    <table id="childjobtt" class="easyui-treegrid"></table>
+</div>
+
+<div id="parent_job_window">
+    <table id="parentjobtt" class="easyui-treegrid"></table>
+</div>
+</body>
+</html>

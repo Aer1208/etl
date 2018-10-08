@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ftoul.bi.etl.mapper.EventMapper" >
+    <resultMap id="EventMap" type="com.ftoul.bi.etl.model.JobEvent" >
+        <id column="event_id" property="eventId" jdbcType="INTEGER" />
+        <result column="job_id" property="jobId" jdbcType="INTEGER" />
+        <result column="inst_id" property="instId" jdbcType="INTEGER"/>
+        <result column="data_date" property="dataDate" jdbcType="VARCHAR" />
+        <result column="ref_job_id" property="refJobId" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        event_id, job_id,inst_id, data_date, ref_job_id
+    </sql>
+
+    <select id="getList" resultMap="EventMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_job_event
+    </select>
+    <delete id="delete" >
+        delete from t_job_event
+        WHERE event_id in
+        <foreach collection="eventIds" index="index" item="id"
+                 separator="," open="(" close=")">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </delete>
+    <insert id="add" parameterType="com.ftoul.bi.etl.model.JobQueue" >
+        insert into t_job_event (job_id,inst_id, data_date, ref_job_id)
+        values (#{jobId,jdbcType=INTEGER},#{instId, jdbcType=VARCHAR}, #{dataDate,jdbcType=VARCHAR}, #{refJobId,jdbcType=INTEGER})
+    </insert>
+
+    <update id="update" parameterType="com.ftoul.bi.etl.model.JobQueue">
+        update t_job_event set
+        <trim prefix="" suffix="" suffixOverrides=",">
+            <if test="jobId != null and jobId !=0">
+                job_id=#{jobId, jdbcType=INTEGER},
+            </if>
+            <if test="dataDate != null">
+                data_date=#{dataDate, jdbcType=VARCHAR},
+            </if>
+            <if test="instId != null and instId !=0">
+                inst_id=#{instId, jdbcType=INTEGER},
+            </if>
+            <if test="refJobId != null and refJobId !=0">
+                ref_job_id = #{refJobId, jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where event_id = #{eventId, jdbcType=INTEGER}
+    </update>
+</mapper>

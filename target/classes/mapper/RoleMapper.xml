@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mongohua.etl.mapper.RoleMapper" >
+    <resultMap id="RoleMap" type="com.mongohua.etl.model.Role" >
+        <result column="role_id" property="roleId" jdbcType="INTEGER" />
+        <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+        <result column="role_code" property="roleCode" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        role_id, role_name, role_code, status
+    </sql>
+    <select id="getRoles" resultMap="RoleMap"  >
+        select
+        <include refid="Base_Column_List" />
+        from t_role
+      where status=1
+    </select>
+
+    <select id="getRolesByUserId" resultMap="RoleMap" >
+        select
+        b.role_id, b.role_name, b.role_code, b.status
+        from t_user a
+             join t_role b on a.role_id=b.role_id
+        where a.user_id=#{userId}
+          and b.status=1
+    </select>
+
+    <insert id="add" parameterType="com.mongohua.etl.model.Role" keyProperty="roleId" useGeneratedKeys="true" >
+        insert into t_role (role_name,role_code,status) values(#{roleName,jdbcType=VARCHAR},#{roleCode,jdbcType=VARCHAR},#{status,jdbcType=INTEGER})
+    </insert>
+
+    <update id="update" parameterType="com.mongohua.etl.model.Role" >
+        update t_role set role_name=#{roleName,jdbcType=VARCHAR},
+                           role_code=#{roleCode, jdbcType=VARCHAR},
+                           status = #{status,jdbcType=INTEGER}
+         where role_id = #{roleId, jdbcType=INTEGER}
+    </update>
+
+    <insert id="grantPerms">
+        insert into t_role_menu (role_id,menu_id) VALUES
+        <foreach collection="permIds" item="permId" separator=",">
+            (#{roleId}, #{permId})
+        </foreach>
+    </insert>
+
+    <delete id="deletePerms" >
+        delete from t_role_menu where role_id = #{roleId}
+    </delete>
+
+</mapper>

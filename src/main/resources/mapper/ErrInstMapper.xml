@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mongohua.etl.mapper.ErrInstMapper" >
+    <resultMap id="ErrInstMap" type="com.mongohua.etl.model.ErrInst" >
+        <id column="inst_id" property="instId" jdbcType="INTEGER" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="job_type" property="jobType" jdbcType="INTEGER" />
+        <result column="job_id" property="jobId" jdbcType="INTEGER" />
+        <result column="job_name" property="jobName" jdbcType="VARCHAR" />
+        <result column="data_date" property="dataDate" jdbcType="VARCHAR" />
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+        <result column="cron_desc" property="cronDesc" jdbcType="VARCHAR" />
+        <result column="job_cycle" property="jobCycle" jdbcType="INTEGER" />
+        <result column="cycle_unit" property="cycleUnit" jdbcType="INTEGER" />
+    </resultMap>
+
+    <select id="getList" resultMap="ErrInstMap" parameterType="HashMap">
+        select
+              a.inst_id,
+              a.status,
+              case when b.job_id is null then 1 else 2 end job_type,
+              b.job_id,
+              ifnull(c.job_name, d.ds_name) job_name,
+              b.data_date,
+              b.start_time,
+              b.end_time,
+              ifnull(c.cron_desc, d.cron_desc) cron_desc,
+              ifnull(c.job_cycle,d.job_cycle) job_cycle,
+              ifnull(c.cycle_unit,d.cycle_unit) cycle_unit
+        from t_err_inst A
+              join t_job_inst b on a.inst_id=b.inst_id
+              left join t_job_def c on b.job_id=c.job_id
+              left join t_ds_def d on b.job_id=d.ds_id
+      limit #{pageNo}, #{pageSize}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer" >
+        select count(*)
+          from t_err_inst
+    </select>
+
+</mapper>

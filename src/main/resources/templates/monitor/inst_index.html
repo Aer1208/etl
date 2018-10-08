@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" href="../../css/default.css" th:href="@{/css/default.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/default/easyui.css" th:href="@{/easyui/themes/default/easyui.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css" th:href="@{/easyui/themes/icon.css}"/>
+    <script type="text/javascript" src="../../easyui/jquery-1.4.4.min.js" th:src="@{/easyui/jquery-1.4.4.min.js}"></script>
+    <script type="text/javascript" src="../../easyui/jquery.easyui.min.1.2.2.js" th:src="@{/easyui/jquery.easyui.min.1.2.2.js}"></script>
+    <script type="text/javascript" src="../../js/inst_list.js" th:src="@{/js/inst_list.js}"></script>
+    <script type="text/javascript" src="../../js/common.js" th:src="@{/js/common.js}"></script>
+    <title>作业运行情况监控列表</title>
+</head>
+<body>
+<div class="search_div" >
+    <form id="dom_var_search">
+        作业ID:
+        <input id="jobId" type="text"/>
+        数据日期:
+        <input id="dataDate" type="text"/>
+        作业状态:
+        <input id="status" type="text"/>
+        <a id="a_var_search" href="javascript:void(0)"
+           class="easyui-linkbutton" data-options="plain:true"
+           iconCls="icon-search">查询</a>
+        <a id="a_var_reset" href="javascript:void(0)"
+           class="easyui-linkbutton" data-options="plain:true"
+           iconCls="icon-reload">清除条件</a>
+    </form>
+</div>
+
+<table id="tt" class="easyui-datagrid" >
+</table>
+<!-- 分页栏 -->
+<!--
+<div id="dom_var_pagination" class="easyui-pagination"></div>
+-->
+<!-- 弹出窗口 -->
+<div id="dom_var_window"></div>
+</body>
+
+</html>

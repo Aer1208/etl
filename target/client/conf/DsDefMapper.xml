@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ftoul.bi.etl.mapper.DsDefMapper" >
+    <resultMap id="DsDefMap" type="com.ftoul.bi.etl.model.DsDef" >
+        <id column="ds_id" property="dsId" jdbcType="INTEGER" />
+        <result column="ds_name" property="dsName" jdbcType="VARCHAR" />
+        <result column="src_tab_nam" property="srcTabName" jdbcType="VARCHAR" />
+        <result column="src_db_nam" property="srcDbName" jdbcType="VARCHAR" />
+        <result column="src_serv_ip" property="srcServIp" jdbcType="VARCHAR" />
+        <result column="src_db_typ" property="srcDbType" jdbcType="VARCHAR" />
+        <result column="src_serv_port" property="srcServPort" jdbcType="INTEGER" />
+        <result column="target_path" property="targetPath" jdbcType="VARCHAR" />
+        <result column="cron_desc" property="cronDesc" jdbcType="VARCHAR" />
+        <result column="field_del" property="fieldDel" jdbcType="VARCHAR" />
+        <result column="EXPORT_COLS" property="exportCols" jdbcType="VARCHAR" />
+        <result column="where_exp" property="whereExp" jdbcType="VARCHAR" />
+        <result column="priorty" property="priorty" jdbcType="INTEGER" />
+        <result column="ds_valid" property="dsValid" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List" >
+        DS_ID
+,DS_NAME
+,SRC_TAB_NAM
+,SRC_DB_NAM
+,SRC_DB_TYP
+,SRC_SERV_IP
+,SRC_SERV_PORT
+,TARGET_PATH
+,CRON_DESC
+,FIELD_DEL
+,EXPORT_COLS
+,WHERE_EXP
+,PRIORTY
+,DS_VALID
+    </sql>
+    <select id="getById" resultMap="DsDefMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from t_ds_def
+        where ds_id = #{dsId,jdbcType=INTEGER}
+    </select>
+    <!-- 这个方法是我自己加的 -->
+    <select id="getList" resultMap="DsDefMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_ds_def
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer" >
+        delete from t_ds_def
+        where ds_id = #{dsId,jdbcType=INTEGER}
+    </delete>
+    <insert id="add" parameterType="com.ftoul.bi.etl.model.DsDef" >
+        insert into t_ds_def (DS_ID
+,DS_NAME
+,SRC_TAB_NAM
+,SRC_DB_NAM
+,SRC_DB_TYP
+,SRC_SERV_IP
+,SRC_SERV_PORT
+,TARGET_PATH
+,CRON_DESC
+,FIELD_DEL
+,EXPORT_COLS
+,WHERE_EXP
+,PRIORTY
+,DS_VALID)
+        values (#{dsId,jdbcType=INTEGER}, #{dsName,jdbcType=VARCHAR}, #{srcTabName,jdbcType=VARCHAR},
+        #{srcDbName,jdbcType=VARCHAR},#{srcDbType,jdbcType=VARCHAR},#{srcServIp,jdbcType=VARCHAR},#{srcServPort,jdbcType=VARCHAR},
+        #{targetPath,jdbcType=VARCHAR},#{cronDesc, jdbcType=VARCHAR},#{fieldDel,jdbcType=VARCHAR},#{exportCols,jdbcType=VARCHAR},
+        #{whereExp,jdbcType=VARCHAR},#{priorty,jdbcType=INTEGER},#{dsValid, jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.ftoul.bi.etl.model.DsDef" >
+        insert into t_ds_def
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="dsId != null" >
+                DS_ID,
+            </if>
+            <if test="userName != null" >
+                user_name,
+            </if>
+            <if test="password != null" >
+                password,
+            </if>
+            <if test="phone != null" >
+                phone,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="userId != null" >
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null" >
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null" >
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null" >
+                #{phone,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>

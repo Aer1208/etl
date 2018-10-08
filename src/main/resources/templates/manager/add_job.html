@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" href="../../css/default.css" th:href="@{/css/default.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/default/easyui.css" th:href="@{/easyui/themes/default/easyui.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../easyui/themes/icon.css" th:href="@{/easyui/themes/icon.css}"/>
+    <script type="text/javascript" src="../../easyui/jquery-1.4.4.min.js" th:src="@{/easyui/jquery-1.4.4.min.js}"></script>
+    <script type="text/javascript" src="../../easyui/jquery.easyui.min.1.2.2.js" th:src="@{/easyui/jquery.easyui.min.1.2.2.js}"></script>
+    <script type="text/javascript" src="../../js/add_job.js" th:src="@{/js/add_job.js}"></script>
+    <script type="text/javascript" src="../../js/common.js" th:src="@{/js/common.js}"></script>
+    <title>新增作业</title>
+</head>
+<body class="easyui-layout" style="overflow-y: hidden"  scroll="no">
+        <div region="center" border="false" style="padding: 10px; background: #fff; border: 1px solid #ccc;">
+            <div class="easyui-panel" title="作业定义表">
+                <table >
+                    <tr>
+                        <td>作业Id：</td>
+                        <td><input id="jobId" class="easyui-numberbox" name="jobId" data-options="required:true"  /></td>
+                        <td>作业名称：</td>
+                        <td><input id="jobName" class="txt01" name="jobName" data-options="required:true" /></td>
+                        <td>优先级：</td>
+                        <td><input id="priorty" class="easyui-numberbox" name="jobQueue.priorty" data-options="required:true" /></td>
+                    </tr>
+                    <tr>
+                        <td>作业脚本：</td>
+                        <td><input id="cmdName" class="txt01" name="cmdName" data-options="required:true" /></td>
+                        <td>脚本路径：</td>
+                        <td><input id="cmdPath" class="txt01" name="cmdPath" data-options="required:true" /></td>
+                        <td>作业组：</td>
+                        <td><input id="jobGroup" class="txt01" name="jobGroup" data-options="required:true" /></td>
+                    </tr>
+
+                    <tr>
+                        <td>作业周期：</td>
+                        <td><input id="jobCycle" class="txt01" name="jobGroup" data-options="required:true" /></td>
+                        <td>周期单位：</td>
+                        <td><input id="cycleUnit" class="txt01" name="jobGroup" data-options="required:true" /></td>
+                        <td>作业调度：</td>
+                        <td><input id="cronDesc" class="txt01" name="jobGroup" data-options="required:true" /></td>
+                    </tr>
+
+                    <tr>
+                        <td>写入表名：</td>
+                        <td colspan="3"><input id="tableName" name="tableName" data-options="required:true" style="width: 100%" /></td>
+                        <td>作业类型：</td>
+                        <td> <div id="jobType" /></td>
+                    </tr>
+
+                    <tr style="display: none" id="cleanTr">
+                        <td>源表名：</td>
+                        <td><input id="srcTableName" class="txt01" name="srcTableName" data-options="required:true" /></td>
+                        <td>目标表名：</td>
+                        <td><input id="objTableName" class="txt01" name="objTableName" data-options="required:true" /></td>
+                        <td>目标数据库：</td>
+                        <td><input id="dbName" class="txt01" name="cleanProc" data-options="required:true" /></td>
+                        <td><a href="#" class="easyui-linkbutton" iconCls="icon-ok" id="genCleanParam">生成参数列表</a></td>
+                    </tr>
+
+                </table>
+            </div>
+            <br />
+            <div class="easyui-panel" title="作业参数定义表">
+                <table class="easyui-edatagrid" id="jobparam_tt"/>
+            </div>
+            <br />
+            <div class="easyui-panel" title="作业依赖定义表">
+                <table class="easyui-edatagrid" id="jobref_tt"/>
+            </div>
+
+        </div>
+
+        <div region="south" border="false" style="text-align: right; height: 30px; line-height: 30px;">
+            <a id="save" class="easyui-linkbutton" icon="icon-ok" href="javascript:void(0)" >确定</a>
+            <a id="btnCancel" class="easyui-linkbutton" icon="icon-cancel" href="javascript:void(0)">取消</a>
+        </div>
+</body>
+</html>

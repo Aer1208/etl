@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mongohua.etl.mapper.JobParamDefMapper" >
+    <resultMap id="JobParamDefMap" type="com.mongohua.etl.model.JobParamDef" >
+        <result column="JOB_ID" property="jobId" jdbcType="INTEGER" />
+        <result column="PARAM_SEQ" property="paramSeq" jdbcType="INTEGER" />
+        <result column="PARAM_ID" property="paramId" jdbcType="VARCHAR" />
+        <result column="PARAM_NAME" property="paramName" jdbcType="VARCHAR" />
+        <result column="PARAM_DEF" property="paramDef" jdbcType="INTEGER" />
+        <result column="PARAM_TYP" property="paramType" jdbcType="INTEGER" />
+        <result column="PARAM_VALID" property="paramValid" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        JOB_ID,PARAM_SEQ,PARAM_ID,PARAM_NAME,PARAM_DEF,PARAM_TYP,PARAM_VALID
+    </sql>
+    <select id="getById" resultMap="JobParamDefMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from t_job_param
+        where job_id = #{jobId,jdbcType=INTEGER}
+          AND param_valid=1
+        Order by PARAM_SEQ
+    </select>
+    <!-- 这个方法是我自己加的 -->
+    <select id="getList" resultMap="JobParamDefMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_job_param
+       where param_valid=1
+        Order by PARAM_SEQ
+    </select>
+    <delete id="delete" >
+        delete from t_job_param
+        where job_id = #{jobId}
+          AND param_seq=#{paramSeq}
+    </delete>
+
+    <select id="existsParam" resultType="java.lang.Integer">
+        select count(*)
+          from t_job_param
+         where job_id = #{jobId}
+           AND param_seq=#{paramSeq}
+    </select>
+
+    <insert id="add" parameterType="com.mongohua.etl.model.JobParamDef" >
+        insert into t_job_param (JOB_ID,PARAM_SEQ,PARAM_ID,PARAM_NAME,PARAM_DEF,PARAM_TYP,PARAM_VALID)
+        values (#{jobId,jdbcType=INTEGER}, #{paramSeq,jdbcType=INTEGER}, #{paramId,jdbcType=VARCHAR},#{paramName, jdbcType=VARCHAR},#{paramDef,jdbcType=INTEGER},
+                 #{paramType, jdbcType=INTEGER},#{paramValid,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="addParams" >
+        insert into t_job_param (JOB_ID,PARAM_SEQ,PARAM_ID,PARAM_NAME,PARAM_DEF,PARAM_TYP,PARAM_VALID)
+        values
+        <foreach collection="paramDefs" item="param" separator=",">
+            (#{param.jobId,jdbcType=INTEGER}, #{param.paramSeq,jdbcType=INTEGER}, #{param.paramId,jdbcType=VARCHAR},#{param.paramName, jdbcType=VARCHAR},
+            #{param.paramDef,jdbcType=INTEGER},#{param.paramType, jdbcType=INTEGER},#{param.paramValid,jdbcType=VARCHAR})
+        </foreach>
+
+    </insert>
+
+    <update id="update" parameterType="com.mongohua.etl.model.JobParamDef">
+        update t_job_param SET
+        <trim prefix="" suffix="" suffixOverrides=",">
+            <if test="paramId != null">
+                param_id=#{paramId, jdbcType=VARCHAR},
+            </if>
+            <if test="paramName != null">
+                PARAM_NAME=#{paramName, jdbcType=VARCHAR},
+            </if>
+            <if test="paramDef != null ">
+                PARAM_DEF = #{paramDef, jdbcType=VARCHAR},
+            </if>
+            <if test="paramType != null">
+                PARAM_TYP=#{paramType, jdbcType=INTEGER},
+            </if>
+            <if test="paramValid != null">
+                PARAM_VALID=#{paramValid, jdbcType=INTEGER},
+            </if>
+        </trim>
+        where job_id = #{jobId, jdbcType=INTEGER}
+          AND param_seq=#{paramSeq, jdbcType=INTEGER}
+    </update>
+
+</mapper>

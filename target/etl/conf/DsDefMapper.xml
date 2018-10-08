@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ftoul.bi.etl.mapper.DsDefMapper" >
+    <resultMap id="DsDefMap" type="com.ftoul.bi.etl.model.DsDef" >
+        <id column="ds_id" property="dsId" jdbcType="INTEGER" />
+        <result column="ds_name" property="dsName" jdbcType="VARCHAR" />
+        <result column="src_tab_nam" property="srcTabName" jdbcType="VARCHAR" />
+        <result column="src_db_nam" property="srcDbName" jdbcType="VARCHAR" />
+        <result column="src_serv_ip" property="srcServIp" jdbcType="VARCHAR" />
+        <result column="src_db_typ" property="srcDbType" jdbcType="VARCHAR" />
+        <result column="src_serv_port" property="srcServPort" jdbcType="INTEGER" />
+        <result column="target_path" property="targetPath" jdbcType="VARCHAR" />
+        <result column="cron_desc" property="cronDesc" jdbcType="VARCHAR" />
+        <result column="field_del" property="fieldDel" jdbcType="VARCHAR" />
+        <result column="EXPORT_COLS" property="exportCols" jdbcType="VARCHAR" />
+        <result column="where_exp" property="whereExp" jdbcType="VARCHAR" />
+        <result column="priorty" property="priorty" jdbcType="INTEGER" />
+        <result column="ds_valid" property="dsValid" jdbcType="INTEGER"/>
+        <result column="last_status" property="lastStatus" jdbcType="INTEGER" />
+        <result column="last_data_date" property="lastDataDate" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        A.DS_ID
+,A.DS_NAME
+,A.SRC_TAB_NAM
+,A.SRC_DB_NAM
+,A.SRC_DB_TYP
+,A.SRC_SERV_IP
+,A.SRC_SERV_PORT
+,A.TARGET_PATH
+,A.CRON_DESC
+,A.FIELD_DEL
+,A.EXPORT_COLS
+,A.WHERE_EXP
+,A.PRIORTY
+,A.DS_VALID
+    </sql>
+    <select id="getById" resultMap="DsDefMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from t_ds_def A
+        where A.ds_id = #{dsId,jdbcType=INTEGER}
+    </select>
+    <select id="getList" resultMap="DsDefMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_ds_def A
+        where ds_valid=1
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer" >
+        delete from t_ds_def
+        where ds_id = #{dsId,jdbcType=INTEGER}
+    </delete>
+    <insert id="add" parameterType="com.ftoul.bi.etl.model.DsDef" >
+        insert into t_ds_def (DS_ID
+,DS_NAME
+,SRC_TAB_NAM
+,SRC_DB_NAM
+,SRC_DB_TYP
+,SRC_SERV_IP
+,SRC_SERV_PORT
+,TARGET_PATH
+,CRON_DESC
+,FIELD_DEL
+,EXPORT_COLS
+,WHERE_EXP
+,PRIORTY
+,DS_VALID)
+        values (#{dsId,jdbcType=INTEGER}, #{dsName,jdbcType=VARCHAR}, #{srcTabName,jdbcType=VARCHAR},
+        #{srcDbName,jdbcType=VARCHAR},#{srcDbType,jdbcType=VARCHAR},#{srcServIp,jdbcType=VARCHAR},#{srcServPort,jdbcType=VARCHAR},
+        #{targetPath,jdbcType=VARCHAR},#{cronDesc, jdbcType=VARCHAR},#{fieldDel,jdbcType=VARCHAR},#{exportCols,jdbcType=VARCHAR},
+        #{whereExp,jdbcType=VARCHAR},#{priorty,jdbcType=INTEGER},#{dsValid, jdbcType=INTEGER})
+    </insert>
+
+    <update id="update" parameterType="com.ftoul.bi.etl.model.DsDef">
+        update t_ds_def set
+        <trim prefix="" suffix="" suffixOverrides=",">
+            <if test="dsName != null">
+                ds_name=#{dsName, jdbcType=VARCHAR},
+            </if>
+            <if test="srcTabName != null">
+                src_tab_nam=#{srcTabName, jdbcType=VARCHAR},
+            </if>
+            <if test="srcDbName != null">
+                src_db_nam = #{srcDbName, jdbcType=VARCHAR},
+            </if>
+            <if test="srcDbType != null">
+                src_db_typ = #{srcDbType, jdbcType=VARCHAR},
+            </if>
+            <if test="srcServIp != null">
+                src_serv_ip = #{srcServIp, jdbcType=VARCHAR},
+            </if>
+            <if test="srcServPort != null">
+                SRC_SERV_PORT = #{srcServPort, jdbcType=INTEGER},
+            </if>
+            <if test="targetPath != null">
+                CRON_DESC = #{cronDesc, jdbcType=VARCHAR},
+            </if>
+            <if test="cronDesc != null">
+                TARGET_PATH = #{targetPath, jdbcType=VARCHAR},
+            </if>
+            <if test="fieldDel != null">
+                FIELD_DEL = #{fieldDel, jdbcType=VARCHAR},
+            </if>
+            <if test="exportCols != null">
+                EXPORT_COLS = #{exportCols, jdbcType=VARCHAR},
+            </if>
+            <if test="whereExp != null">
+                WHERE_EXP = #{whereExp, jdbcType=VARCHAR},
+            </if>
+            <if test="priorty != null">
+                priorty = #{priorty, jdbcType=VARCHAR},
+            </if>
+            <if test="dsValid != null">
+                DS_VALID = #{dsValid, jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where ds_id = #{dsId, jdbcType=INTEGER}
+    </update>
+
+    <select id="getListForPage" resultMap="DsDefMap" parameterType="HashMap">
+        select
+        <include refid="Base_Column_List" />
+        ,CASE WHEN B.INST_ID IS NULL THEN -1 ELSE B.STATUS END AS last_status
+        ,B.DATA_DATE last_data_date
+        from t_ds_def A
+              LEFT JOIN (SELECT A.*,
+                                 IF(@job_id=a.job_id, @rank:=@rank+1,@rank:=1) rank,
+                                 @job_id:=a.job_id
+                           FROM (
+                             SELECT A.*
+                               FROM T_JOB_INST A
+                              ORDER BY A.job_id, A.START_TIME DESC
+                            ) A JOIN (Select @job_id:=null, @rank:=1) B) B ON A.DS_ID=B.job_id AND B.RANK=1
+        where ds_valid=1
+        ORDER BY CASE WHEN B.INST_ID IS NULL THEN -1 ELSE B.STATUS END
+        limit #{pageIndex}, #{pageSize}
+    </select>
+
+    <select id="getListForPage2" resultMap="DsDefMap" parameterType="HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_ds_def A
+        order by ds_id
+        limit #{pageIndex}, #{pageSize}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer" >
+        select count(*) from t_ds_def a  where ds_valid=1
+    </select>
+
+    <select id="getCount2" resultType="java.lang.Integer" >
+        select count(*) from t_ds_def a
+    </select>
+
+    <update id="dsInvalid" >
+        update t_ds_def set ds_valid=0
+        where ds_valid!=0 and ds_id in
+        <foreach collection="dsIds" index="index" item="id"
+                 separator="," open="(" close=")">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+
+    <update id="dsValid" >
+        update t_ds_def set ds_valid=1
+        where ds_valid!=1 and ds_id in
+        <foreach collection="dsIds" index="index" item="id"
+                 separator="," open="(" close=")">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+</mapper>
