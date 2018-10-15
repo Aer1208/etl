@@ -47,7 +47,10 @@ public class JobDef extends Cycle{
      */
     private int lastStatus;
 
-
+    /**
+     * 无依赖作业的调度启动状态 1：已启动，0：未启动
+     */
+    private int scheduleStatus;
 
     /**
      * 最后运行数据日期
@@ -60,6 +63,14 @@ public class JobDef extends Cycle{
 
     public void setLastStatus(int lastStatus) {
         this.lastStatus = lastStatus;
+    }
+
+    public int getScheduleStatus() {
+        return scheduleStatus;
+    }
+
+    public void setScheduleStatus(int scheduleStatus) {
+        this.scheduleStatus = scheduleStatus;
     }
 
     public String getLastDataDate() {

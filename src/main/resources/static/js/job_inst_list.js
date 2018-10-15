@@ -204,10 +204,11 @@ $(function() {
             { field:'cronDesc', title:'作业调度',width:80,align:'center'},
             { field:'jobCycle', title:'作业周期',width:80,align:'center'},
             { field:'cycleUnit', title:'周期单位',width:80,align:'center',formatter:function (val,row,index) {
-                if(val == 0) return "小时"
-                else if (val == 1) return "天"
-                else if (val == 2) return "月"
-                else if (val == 3) return "年"
+                if(val == 0) return "小时";
+                else if (val == 1) return "天";
+                else if (val == 2) return "月";
+                else if (val == 3) return "年";
+                else if (val == 4) return "分";
             }},
             { field:'jobValid', title:'是否有效',width:80,align:'center',formatter:function(val, row,index) {
                 if (val == 1) return "<span style=\"color:green\" >有效</span>";

@@ -102,6 +102,29 @@
         </if>
     </select>
 
+    <select id="getListForPage3" resultMap="JobDefMap" parameterType="HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_job_def A
+              left join t_job_ref b on a.job_id=b.job_id
+        Where b.job_id is null
+        <if test="key != null">
+            and (job_id like concat(#{key},'%') or job_name like concat(#{key},'%') or cmd_nam like concat(#{key},'%'))
+        </if>
+        order by job_id
+        limit #{pageIndex}, #{pageSize}
+    </select>
+
+    <select id="getCount3" resultType="java.lang.Integer" parameterType="HashMap">
+        select count(*)
+          from t_job_def a
+                left join t_job_ref b on a.job_id=b.job_id
+        Where b.job_id is null
+        <if test="key != null">
+            and (job_id like concat(#{key},'%') or job_name like concat(#{key},'%') or cmd_nam like concat(#{key},'%'))
+        </if>
+    </select>
+
     <delete id="delete" parameterType="java.lang.Integer" >
         delete from t_job_def
         where job_id = #{dsId,jdbcType=INTEGER}

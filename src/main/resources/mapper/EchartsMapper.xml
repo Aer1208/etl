@@ -32,7 +32,6 @@
                 count(*) run_job_cnt
           FROM t_job_inst
         WHERE status=1
-          and DATE_FORMAT(START_TIME,'%H') <![CDATA[ < ]]> 10
           and substr(data_date,1,8) <![CDATA[ > ]]>  DATE_FORMAT(date_sub(curdate(), INTERVAL 8 DAY),'%Y%m%d')
         group by substr(data_date,1,8);
     </select>

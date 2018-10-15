@@ -31,24 +31,7 @@ public class NotRefSchedule extends InitJdbc{
     public void schedule() {
 
         for (final JobDef jobDef: InitDataBase.jobDefMap.values()) {
-            final int jobId = jobDef.getJobId();
-            final String cronDesc = jobDef.getCronDesc();
-            final int priorty = jobDef.getPriorty();
-            if (!InitDataBase.jobRefMap.keySet().contains(jobId) && cronDesc != null && !"".equals(cronDesc)) {
-                // 如果内存中的作业没有依赖，并且又定义了作业运行定时表达式，则定时将作业插入队列中
-                threadPoolTaskScheduler.schedule(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            String vDate = Util.dateIns(jobDef.getJobCycle(),jobDef.getCycleUnit());
-                            jdbcTemplate.update("INSERT INTO T_JOB_QUEUE (job_id,data_date,PRIORTY) VALUES(?,?,?)"
-                                    ,jobId,vDate,priorty);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },new CronTrigger(cronDesc) );
-            }
+            startNotRefJob(jobDef);
         }
     }
 
@@ -96,4 +79,20 @@ public class NotRefSchedule extends InitJdbc{
             notRefJobSchd.remove(jobId);
         }
     }
+
+    /**
+     * 判断没有依赖的作业调度是否已经启动
+     * @param jobDef
+     * @return
+     */
+    public int scheduleStauts(JobDef jobDef) {
+        if (jobDef == null ) {
+            return 0;
+        }
+        if (notRefJobSchd.containsKey(jobDef.getJobId())) {
+            return 1;
+        }
+        return 0;
+    }
+
 }

@@ -84,6 +84,22 @@ public interface JobDefMapper {
     public int getCount2(JobDef jobDef);
 
     /**
+     * 获取全部无依赖的作业列表
+     * @param key 搜索关键字
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    public List<JobDef> getListForPage3(@Param("key") String key,@Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize);
+
+    /**
+     * 获取全部无依赖的作业记录数
+     * @param key 搜索关键字
+     * @return
+     */
+    public int getCount3(@Param("key") String key);
+
+    /**
      * 更新一个作业
      * @param jobDef
      * @return

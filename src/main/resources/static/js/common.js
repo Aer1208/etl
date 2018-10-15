@@ -24,6 +24,9 @@ Cron.prototype.getCronExp = function () {
     } else if (this.cycleUnit == 3) {
         this.month = "01"
         this.day = "02"
+    } else if (this.cycleUnit == 4) {
+        this.hour = "*"
+        this.minute = "*/" + this.jobCycle
     }
     return this.second + " " + this.minute + " " + this.hour + " " + this.day  + " " + this.month + " " + this.year
 }
@@ -49,6 +52,9 @@ var cycleOption={
     },{
         label:"年",
         value:3
+    },{
+        label:'分',
+        value:4
     }],
     onSelect:function (item) {
         var cron = new Cron();

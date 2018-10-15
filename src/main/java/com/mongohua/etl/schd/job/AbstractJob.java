@@ -275,6 +275,7 @@ public abstract class AbstractJob extends InitJdbc implements Job {
         Map<String,String> params = new HashMap<String, String>();
         params.put("BIPROG_ROOT",((Environment) SpringContextUtil.getBean(Environment.class)).getProperty("prog_root"));
         params.put("vYear", vDate.substring(0,4));
+        params.put("vDataDate",vDate);
         if (cycleUnit==0) {
             // 如果运行周期是小时，则增加小时参数
             params.put("vDataHour", vDate.substring(0, 10));

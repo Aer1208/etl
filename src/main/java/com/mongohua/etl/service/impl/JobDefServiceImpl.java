@@ -11,12 +11,15 @@ import com.mongohua.etl.model.JobDef;
 import com.mongohua.etl.model.JobDef2;
 import com.mongohua.etl.model.JobParamDef;
 import com.mongohua.etl.model.JobRef;
+import com.mongohua.etl.schd.NotRefSchedule;
+import com.mongohua.etl.schd.job.Job;
 import com.mongohua.etl.service.JobDefService;
 import com.mongohua.etl.utils.PageModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +40,9 @@ public class JobDefServiceImpl implements JobDefService {
 
     @Autowired
     private JobLockObjMapper jobLockObjMapper;
+
+    @Autowired
+    private NotRefSchedule notRefSchedule;
 
     @Override
     public List<JobDef> getList() {
@@ -123,6 +129,31 @@ public class JobDefServiceImpl implements JobDefService {
         jobPageModel.setTotal(count);
         int pageIndex = (page - 1) * rows;
         jobPageModel.setRows(jobDefMapper.getListForPage2(jobDef,pageIndex,rows));
+        int totalPage = (int)Math.ceil(count*1.0/rows);
+        jobPageModel.setTotalPage(totalPage);
+        return jobPageModel;
+    }
+
+    @Override
+    public PageModel<JobDef> getListForPage3(String key, int page, int rows) {
+        if (page < 0) {
+            page = 1;
+        }
+
+        PageModel<JobDef> jobPageModel = new PageModel<JobDef>();
+        jobPageModel.setPageNo(page);
+        jobPageModel.setPageSize(rows);
+
+        int count = jobDefMapper.getCount3(key);
+        jobPageModel.setTotal(count);
+        int pageIndex = (page - 1) * rows;
+        List<JobDef> jobDefs = jobDefMapper.getListForPage3(key,pageIndex,rows);
+        List<JobDef> jobDefList = new ArrayList<JobDef>();
+        for (JobDef jobDef: jobDefs) {
+            jobDef.setScheduleStatus(notRefSchedule.scheduleStauts(jobDef));
+            jobDefList.add(jobDef);
+        }
+        jobPageModel.setRows(jobDefList);
         int totalPage = (int)Math.ceil(count*1.0/rows);
         jobPageModel.setTotalPage(totalPage);
         return jobPageModel;

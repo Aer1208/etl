@@ -72,6 +72,15 @@ public interface JobDefService {
     public PageModel<JobDef> getListForPage2(JobDef jobdef,int page, int rows);
 
     /**
+     * 获取无依赖作业列表
+     * @param  key 搜索关键字
+     * @param page
+     * @param rows
+     * @return
+     */
+    public PageModel<JobDef> getListForPage3(String key,int page, int rows);
+
+    /**
      * 添加一个作业，包括作业定义表，作业依赖表，作业参数表
      * @param jobDef2
      * @return

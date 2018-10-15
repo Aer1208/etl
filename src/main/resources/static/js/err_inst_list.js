@@ -104,6 +104,7 @@ $(function() {
                 else if (val == 1) return "天"
                 else if (val == 2) return "月"
                 else if (val == 3) return "年"
+                else if (val == 4) return "分"
             }}
         ]]
     });

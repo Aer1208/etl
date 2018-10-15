@@ -328,13 +328,13 @@ public class JobController {
     @RequestMapping(value = "/manager/startNotRefSchd",produces = "application/json;charset=utf-8")
     public String startNotRefSchd(int jobId) {
         if (InitDataBase.jobRefMap.containsKey(jobId)) {
-            return "{\"ret\":\"success\",\"msg\":\"不能启动有依赖的作业调度\"}";
+            return "{\"ret\":\"fail\",\"msg\":\"不能启动有依赖的作业调度\"}";
         }
         JobDef jobDef = InitDataBase.jobDefMap.get(jobId);
         if (jobDef == null) {
-            return "{\"ret\":\"success\",\"msg\":\"没有找到作业\"}";
+            return "{\"ret\":\"fail\",\"msg\":\"没有找到作业\"}";
         }else if (jobDef.getCronDesc() == null || "".equals(jobDef.getCronDesc())) {
-            return "{\"ret\":\"success\",\"msg\":\"没有配置定时任务表达式\"}";
+            return "{\"ret\":\"fail\",\"msg\":\"没有配置定时任务表达式\"}";
         }
         notRefSchedule.startNotRefJob(jobDef);
         return "{\"ret\":\"success\"}";
@@ -350,5 +350,31 @@ public class JobController {
         JobDef jobDef = InitDataBase.jobDefMap.get(jobId);
         notRefSchedule.stopNotRefJob(jobDef);
         return "{\"ret\":\"success\"}";
+    }
+
+    /**
+     * 没有依赖的作业列表
+     * @return
+     */
+    @RequestMapping(value = "/manager/not_ref_job_index")
+    @RequiresPermissions("manager:not_ref_job_index")
+    public String notRefJobIndex() {
+        return "manager/not_ref_job_index";
+    }
+
+    /**
+     * 分页返回所有作业列表
+     * @param page
+     * @param rows
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/manager/not_ref_job_list",produces = "application/json;charset=utf-8")
+    public String notRefJobs(String key, int page, int rows) {
+        PageModel<JobDef> listForPage = jobDefService.getListForPage3(key,page, rows);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("rows",listForPage.getRows());
+        jsonObject.put("total",listForPage.getTotal());
+        return jsonObject.toString();
     }
 }
