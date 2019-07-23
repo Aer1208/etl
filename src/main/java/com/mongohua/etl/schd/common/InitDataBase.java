@@ -122,6 +122,7 @@ public class InitDataBase {
         logger.info("刷新作业锁....");
         synchronized (jobWriterLock) {
             jobWriterLock = new HashMap<Integer, List<JobLockObj>>();
+            jobReadLock = new HashMap<Integer, List<JobLockObj>>();
             List<JobLockObj> jobLockObjs = jobLockObjService.getAllJobLockObjs();
             for (JobLockObj jobLockObj : jobLockObjs) {
                 int jobId = jobLockObj.getJobId();

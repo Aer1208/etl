@@ -5,6 +5,7 @@ import com.mongohua.etl.schd.common.InitDataBase;
 import com.mongohua.etl.schd.common.ParamPaser;
 import com.mongohua.etl.utils.Util;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -29,11 +30,20 @@ public class SqoopJob extends  AbstractJob{
         DsDef dsDef = InitDataBase.dsDefMap.get(jobId);
         String servIp = dsDef.getSrcServIp();
         String dbName = dsDef.getSrcDbName();
-        String username = environment.getProperty(servIp+".username","root");
-        String password = environment.getProperty(servIp + ".password","dzwang**");
+
+        String username = environment.getProperty(servIp+ "." + dbName + ".username");
+        String password = environment.getProperty(servIp+ "." + dbName + ".password");
         String port =  String.valueOf(dsDef.getSrcServPort());
         if (port == null || "".equals(port)) {
             port = environment.getProperty(servIp + "." + dbName + ".port", "3306");
+        }
+        // add by xiaohaifang 账号密码配置改成 ip + db + username/password
+        if (StringUtils.isEmpty(username)) {
+            username = environment.getProperty(servIp + ".username");
+        }
+
+        if(StringUtils.isEmpty(password)) {
+            password = environment.getProperty(servIp + ".password");
         }
 
         String dbType = dsDef.getSrcDbType();

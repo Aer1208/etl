@@ -54,7 +54,7 @@ public class NotRefSchedule extends InitJdbc{
                 @Override
                 public void run() {
                     try {
-                        String vDate = Util.dateIns(jobDef.getJobCycle(), jobDef.getCycleUnit());
+                        String vDate = Util.dateIns(-jobDef.getJobCycle(), jobDef.getCycleUnit());
                         jdbcTemplate.update("INSERT INTO T_JOB_QUEUE (job_id,data_date,PRIORTY) VALUES(?,?,?)"
                                 , jobId, vDate, priorty);
                     } catch (ParseException e) {

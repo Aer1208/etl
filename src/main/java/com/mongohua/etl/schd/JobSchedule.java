@@ -49,8 +49,8 @@ public class JobSchedule extends InitJdbc{
 
         start();
 
-        threadPoolTaskScheduler.schedule(new QueueRunnable(), new CronTrigger("*/10 * * * * *"));
-        threadPoolTaskScheduler.schedule(new JobRunnable(), new CronTrigger("*/10 * * * * *"));
+        threadPoolTaskScheduler.schedule(new QueueRunnable(), new CronTrigger("*/5 * * * * *"));
+        threadPoolTaskScheduler.schedule(new JobRunnable(), new CronTrigger("*/5 * * * * *"));
 
     }
 
@@ -140,7 +140,7 @@ public class JobSchedule extends InitJdbc{
                         "                    WHERE A.STATUS=1");
                 // 删除重调的作业
                 jdbcTemplate.update("delete from T_ERR_INST WHERE STATUS=1");
-                List<Map<String, Object>> queues = jdbcTemplate.queryForList("select QUEUE_ID, JOB_ID, DATA_DATE FROM t_JOB_QUEUE ORDER BY DATA_DATE, PRIORTY DESC LIMIT " + runningCnt);
+                List<Map<String, Object>> queues = jdbcTemplate.queryForList("select QUEUE_ID, JOB_ID, DATA_DATE FROM t_JOB_QUEUE ORDER BY cast(DATA_DATE as char), PRIORTY DESC LIMIT " + runningCnt);
                 for (Map<String, Object> queue: queues) {
                     final int jobId = Integer.parseInt(queue.get("JOB_ID").toString());
                     final int queueId = Integer.parseInt(queue.get("QUEUE_ID").toString());

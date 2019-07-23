@@ -2,6 +2,7 @@ package com.mongohua.etl.schd;
 
 import com.mongohua.etl.model.DsDef;
 import com.mongohua.etl.schd.common.InitDataBase;
+import com.mongohua.etl.schd.common.InitJdbc;
 import com.mongohua.etl.schd.job.SqoopJob;
 import com.mongohua.etl.utils.Util;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ import java.util.concurrent.ScheduledFuture;
  * @author xiaohf
  */
 @Component
-public class DsSchedule {
+public class DsSchedule extends InitJdbc{
     private final Logger logger = LoggerFactory.getLogger(DsSchedule.class);
     @Autowired
     private ThreadPoolTaskScheduler threadPoolTaskScheduler;
@@ -108,7 +109,8 @@ public class DsSchedule {
         public void run() {
             try {
                 String vDate = Util.dateIns(-dsDef.getJobCycle(),dsDef.getCycleUnit());
-                sqoopJob.run(dsDef.getDsId(), vDate);
+                // sqoopJob.run(dsDef.getDsId(), vDate); // 数据源调起，修改为插入队列中，通过队列方式调起作业
+                jdbcTemplate.update("insert into t_job_queue(job_id,data_date,priorty) values(?,?,?)", dsDef.getDsId(), vDate, dsDef.getPriorty());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
