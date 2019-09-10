@@ -276,21 +276,36 @@ public abstract class AbstractJob extends InitJdbc implements Job {
         params.put("BIPROG_ROOT",((Environment) SpringContextUtil.getBean(Environment.class)).getProperty("prog_root"));
         params.put("vYear", vDate.substring(0,4));
         params.put("vDataDate",vDate);
-        if (cycleUnit==0) {
-            // 如果运行周期是小时，则增加小时参数
-            params.put("vDataHour", vDate.substring(0, 10));
-            params.put("startHr",vDate);
-        }
-        if (cycleUnit == 0 || cycleUnit == 1) {
-            params.put("vDataDate",vDate.substring(0,8));
-            params.put("startDt", vDate.substring(0,8));
-        }
-
-        if (cycleUnit == 0 || cycleUnit ==1 || cycleUnit == 2) {
-            params.put("vMonth",vDate.substring(0,6));
-            params.put("startMon", vDate.substring(0,6));
-        }
         try {
+            if (cycleUnit==0) {
+                // 如果运行周期是小时，则增加小时参数
+                params.put("vDataHour", vDate.substring(0, 10));
+                params.put("startHr",vDate);
+
+                for(int i=1; i<24; i++) {
+                    params.put("vPre" + i + "Hour", Util.dateIns(vDate.substring(0,10),-i,0));
+                    params.put("vNext" + i + "Hour", Util.dateIns(vDate.substring(0,10),i,0));
+                }
+
+            }
+            if (cycleUnit == 0 || cycleUnit == 1) {
+                params.put("vDataDate",vDate.substring(0,8));
+                params.put("startDt", vDate.substring(0,8));
+                for (int i=1;i<10; i++) {
+                    params.put("vPre" +i+"Date", Util.dateIns(vDate.substring(0,8),-i,1));
+                    params.put("vNext" +i+"Date", Util.dateIns(vDate.substring(0,8),-i,1));
+                }
+            }
+
+            if (cycleUnit == 0 || cycleUnit ==1 || cycleUnit == 2) {
+                params.put("vMonth",vDate.substring(0,6));
+                params.put("startMon", vDate.substring(0,6));
+                for (int i=1;i<12; i++) {
+                    params.put("vPre" +i+"Month", Util.dateIns(vDate.substring(0,6),-i,2));
+                    params.put("vNext" +i+"Month", Util.dateIns(vDate.substring(0,6),-i,2));
+                }
+
+            }
             String endHr = Util.dateIns(vDate,jobCycle-1,cycleUnit);
             if (cycleUnit == 0 ) {
                 params.put("endHr", endHr);
