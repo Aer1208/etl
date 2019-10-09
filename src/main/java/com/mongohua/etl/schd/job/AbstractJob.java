@@ -170,7 +170,7 @@ public abstract class AbstractJob extends InitJdbc implements Job {
      */
     private void updateJobStatus(long instId, int status) {
         //更新状态为失败
-        jdbcTemplate.update("UPDATE T_JOB_INST SET END_TIME=?, STATUS=? WHERE INST_ID=?",new java.sql.Timestamp(Util.getCurrentTime()),status,instId);
+        jdbcTemplate.update("UPDATE t_job_inst SET end_time=?, status=? WHERE inst_id=?",new java.sql.Timestamp(Util.getCurrentTime()),status,instId);
     }
 
     /**
@@ -188,16 +188,16 @@ public abstract class AbstractJob extends InitJdbc implements Job {
                     "  from t_job_ref a " +
                     "  join t_job_def b on a.job_id=b.job_id " +
                     " where a.ref_job_id=? " +
-                    "   AND A.REF_TYPE=1" +
+                    "   AND a.ref_type=1" +
                     "   AND b.job_valid=1", instId, vDate, jobId);
 
             // 触发2,3,4类型依赖
             logger.info("starting generate job_ref_cnt...");
-            List<Map<String,Object>> events = jdbcTemplate.queryForList("select a.job_id,A.ref_type,a.ref_job_id " +
+            List<Map<String,Object>> events = jdbcTemplate.queryForList("select a.job_id,a.ref_type,a.ref_job_id " +
                     "  from t_job_ref a " +
                     "  join t_job_def b on a.job_id=b.job_id " +
                     " where a.ref_job_id=? " +
-                    "   AND A.REF_TYPE!=1" +
+                    "   AND a.ref_type!=1" +
                     "   AND b.job_valid=1", jobId);
             for (Map<String, Object> event: events) {
                 String triggerId = event.get("job_id").toString();         // 被触发的作业ID

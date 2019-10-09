@@ -28,7 +28,7 @@
               ifnull(c.cron_desc, d.cron_desc) cron_desc,
               ifnull(c.job_cycle,d.job_cycle) job_cycle,
               ifnull(c.cycle_unit,d.cycle_unit) cycle_unit
-        from t_err_inst A
+        from t_err_inst a
               join t_job_inst b on a.inst_id=b.inst_id
               left join t_job_def c on b.job_id=c.job_id
               left join t_ds_def d on b.job_id=d.ds_id

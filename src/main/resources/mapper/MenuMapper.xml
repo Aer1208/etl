@@ -13,49 +13,49 @@
         <result column="checked" property="checked" jdbcType="INTEGER" />
     </resultMap>
     <sql id="Base_Column_List" >
-        A.menu_id,A.menu_name,A.menu_icon,A.parent_id,A.url,A.permission,A.perm_type,A.status
+        a.menu_id,a.menu_name,a.menu_icon,a.parent_id,a.url,a.permission,a.perm_type,a.status
     </sql>
     <select id="getMenus" resultMap="menuMap">
         select
         <include refid="Base_Column_List" />
-        from t_menu A
-             join t_role_menu B on a.menu_id=b.menu_id
-             join t_user C ON B.ROLE_ID=C.ROLE_ID
-             JOIN t_role D ON B.ROLE_ID=D.ROLE_ID AND D.status=1
-        where A.parent_id=#{parentId}
-          AND C.USER_ID=#{userId}
-          AND A.STATUS=1
+        from t_menu a
+             join t_role_menu b on a.menu_id=b.menu_id
+             join t_user c on b.role_id=c.role_id
+             join t_role d on b.role_id=d.role_id and d.status=1
+        where a.parent_id=#{parentId}
+          AND c.user_id=#{userId}
+          AND a.status=1
     </select>
 
     <select id="getPerimission" resultMap="menuMap">
         select
         <include refid="Base_Column_List" />
-        from t_menu A
-              join t_role_menu B on a.menu_id=b.menu_id
-              join t_user C ON B.ROLE_ID=C.ROLE_ID
-              JOIN t_role D ON B.ROLE_ID=D.ROLE_ID AND D.status=1
-        where  C.USER_ID=#{userId}
-        AND A.STATUS=1
+        from t_menu a
+              join t_role_menu b on a.menu_id=b.menu_id
+              join t_user c on b.role_id=c.role_id
+              join t_role d on b.role_id=d.role_id and d.status=1
+        where  c.user_id=#{userId}
+        and a.status=1
     </select>
 
     <select id="getMenusByPid" resultMap="menuMap">
         select
         <include refid="Base_Column_List" />
-        ,CASE WHEN B.MENU_ID IS NOT NULL THEN 1 ELSE 0 END checked
-        from t_menu A
+        ,case when b.menu_id is not null then 1 else 0 end checked
+        from t_menu a
               left join (
                 select a.menu_id
                   from  t_role_menu a
                  where a.role_id=#{roleId}
               ) b on a.menu_id=b.menu_id
-       WHERE A.parent_id=#{parentId}
+       WHERE a.parent_id=#{parentId}
     </select>
 
     <select id="getMenusByPid2" resultMap="menuMap">
         select
         <include refid="Base_Column_List" />
-        from t_menu A
-        WHERE A.parent_id=#{parentId}
+        from t_menu a
+        WHERE a.parent_id=#{parentId}
     </select>
 
     <insert id="add" parameterType="com.mongohua.etl.model.Menu" >

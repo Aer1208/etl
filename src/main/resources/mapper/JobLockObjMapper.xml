@@ -13,21 +13,21 @@
     <select id="getLockObjsByJobId" resultMap="LockObjMap" >
         select
         <include refid="Base_Column_List" />
-        from t_job_lock_obj A
+        from t_job_lock_obj a
         where job_id=#{jobId}
     </select>
 
     <select id="getJobByLockObj" resultMap="LockObjMap" >
         select
         <include refid="Base_Column_List" />
-        from t_job_lock_obj A
+        from t_job_lock_obj a
         where lock_type=1
     </select>
 
     <select id="getAllJobLockObjs" resultMap="LockObjMap" >
         select
         <include refid="Base_Column_List" />
-        from t_job_lock_obj A
+        from t_job_lock_obj a
     </select>
 
     <insert id="add" parameterType="com.mongohua.etl.model.JobLockObj" >

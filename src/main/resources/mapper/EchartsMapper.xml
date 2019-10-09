@@ -19,10 +19,10 @@
     </resultMap>
 
     <select id="topN" resultMap="EchartTopN"  >
-        SELECT inst_id, UNIX_TIMESTAMP(END_TIME) - UNIX_TIMESTAMP(start_time) run_time
+        SELECT inst_id, UNIX_TIMESTAMP(end_time) - UNIX_TIMESTAMP(start_time) run_time
           FROM t_job_inst
-         where DATA_DATE like concat(#{dataDate},'%')
-         order by UNIX_TIMESTAMP(END_TIME) - UNIX_TIMESTAMP(start_time) desc
+         where data_date like concat(#{dataDate},'%')
+         order by UNIX_TIMESTAMP(end_time) - UNIX_TIMESTAMP(start_time) desc
          limit #{top};
     </select>
 
@@ -37,55 +37,55 @@
     </select>
 
     <select id="allJobMonitor" resultMap="EchartAllJobs">
-    SELECT A.TOT_INST_CNT tot_job_cnt,
-            B.SUCC_INST_CNT succ_job_cnt,
-            B.ERR_INST_CNT err_job_cnt
-       FROM (
-         SELECT SUM(INST_CNT) TOT_INST_CNT
-           FROM (
-                 SELECT JOB_ID,CASE WHEN CYCLE_UNIT=0 THEN 24/JOB_CYCLE ELSE 1 END INST_CNT FROM T_JOB_DEF WHERE JOB_VALID=1
-                 UNION ALL
-                 SELECT DS_ID, CASE WHEN CYCLE_UNIT=0 THEN 24/JOB_CYCLE ELSE 1 END INST_CNT FROM T_DS_DEF WHERE DS_VALID=1
-           ) A
-       ) A JOIN (
-         SELECT SUM(CASE WHEN A.STATUS=1 THEN 1 ELSE 0 END) SUCC_INST_CNT,
-                 SUM(CASE WHEN B.STATUS=0 THEN 1 ELSE 0 END) ERR_INST_CNT
-           FROM t_job_inst A
-                LEFT JOIN t_err_inst B ON A.INST_ID=B.INST_ID
-         WHERE A.DATA_DATE LIKE DATE_FORMAT(date_sub(curdate(), INTERVAL 1 DAY),'%Y%m%d%')
-       ) B
+    SELECT a.tot_inst_cnt tot_job_cnt,
+            b.succ_inst_cnt succ_job_cnt,
+            b.err_inst_cnt err_job_cnt
+       from (
+         select sum(inst_cnt) tot_inst_cnt
+           from (
+                 select job_id,case when cycle_unit=0 then 24/job_cycle else 1 end inst_cnt from t_job_def where job_valid=1
+                 union all
+                 select ds_id, case when cycle_unit=0 then 24/job_cycle else 1 end inst_cnt from t_ds_def where ds_valid=1
+           ) a
+       ) a join (
+         select sum(case when a.status=1 then 1 else 0 end) succ_inst_cnt,
+                 sum(case when b.status=0 then 1 else 0 end) err_inst_cnt
+           from t_job_inst a
+                left join t_err_inst b on a.inst_id=b.inst_id
+         where a.data_date like date_format(date_sub(curdate(), interval 1 day),'%Y%m%d%')
+       ) b
     </select>
 
     <select id="dsMonitor" resultMap="EchartAllJobs">
-        SELECT A.INST_CNT tot_job_cnt,
-                B.SUCC_INST_CNT succ_job_cnt,
-                B.ERR_INST_CNT err_job_cnt
-          FROM (
-                SELECT SUM(CASE WHEN CYCLE_UNIT=0 THEN 24/JOB_CYCLE ELSE 1 END) INST_CNT FROM t_ds_def WHERE DS_VALID=1
-              ) A JOIN (
-            SELECT SUM(CASE WHEN A.STATUS=1 THEN 1 ELSE 0 END) SUCC_INST_CNT,
-                   SUM(CASE WHEN B.STATUS=0 THEN 1 ELSE 0 END) ERR_INST_CNT
-              FROM t_job_inst A
-                   JOIN t_ds_def C ON A.JOB_ID=C.DS_ID
-                   LEFT JOIN t_err_inst B ON A.INST_ID=B.INST_ID
-            WHERE A.DATA_DATE LIKE DATE_FORMAT(date_sub(curdate(), INTERVAL 1 DAY),'%Y%m%d%')
-          ) B
+        select a.inst_cnt tot_job_cnt,
+                b.succ_inst_cnt succ_job_cnt,
+                b.err_inst_cnt err_job_cnt
+          from (
+                select sum(case when cycle_unit=0 then 24/job_cycle else 1 end) inst_cnt from t_ds_def where ds_valid=1
+              ) a join (
+            select sum(case when a.status=1 then 1 else 0 end) succ_inst_cnt,
+                   sum(case when b.status=0 then 1 else 0 end) err_inst_cnt
+              from t_job_inst a
+                   join t_ds_def c on a.job_id=c.ds_id
+                   left join t_err_inst b on a.inst_id=b.inst_id
+            where a.data_date like date_format(date_sub(curdate(), interval 1 day),'%Y%m%d%')
+          ) b
     </select>
 
     <select id="jobMonitor" resultMap="EchartAllJobs">
-        SELECT A.INST_CNT tot_job_cnt,
-               B.SUCC_INST_CNT succ_job_cnt,
-               B.ERR_INST_CNT err_job_cnt
-          FROM (
-                SELECT SUM(CASE WHEN CYCLE_UNIT=0 THEN 24/JOB_CYCLE ELSE 1 END) INST_CNT FROM T_JOB_DEF WHERE JOB_VALID=1
-              ) A JOIN (
-                SELECT SUM(CASE WHEN A.STATUS=1 THEN 1 ELSE 0 END) SUCC_INST_CNT,
-                       SUM(CASE WHEN B.STATUS=0 THEN 1 ELSE 0 END) ERR_INST_CNT
-                  FROM t_job_inst A
-                       JOIN T_JOB_DEF C ON A.JOB_ID=C.JOB_ID
-                       LEFT JOIN t_err_inst B ON A.INST_ID=B.INST_ID
-                WHERE A.DATA_DATE LIKE DATE_FORMAT(date_sub(curdate(), INTERVAL 1 DAY),'%Y%m%d%')
-             ) B
+        select a.inst_cnt tot_job_cnt,
+               b.succ_inst_cnt succ_job_cnt,
+               b.err_inst_cnt err_job_cnt
+          from (
+                select sum(case when cycle_unit=0 then 24/job_cycle else 1 end) inst_cnt from t_job_def where job_valid=1
+              ) a join (
+                select sum(case when a.status=1 then 1 else 0 end) succ_inst_cnt,
+                       sum(case when b.status=0 then 1 else 0 end) err_inst_cnt
+                  from t_job_inst a
+                       join t_job_def c on a.job_id=c.job_id
+                       left join t_err_inst b on a.inst_id=b.inst_id
+                where a.data_date like date_format(date_sub(curdate(), interval 1 day),'%Y%m%d%')
+             ) b
     </select>
 
 </mapper>

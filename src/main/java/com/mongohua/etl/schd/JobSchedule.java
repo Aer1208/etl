@@ -133,14 +133,14 @@ public class JobSchedule extends InitJdbc{
                 int runningCnt = Integer.parseInt(environment.getProperty(Constant.MAX_RUN_CNT)) - jobThreadPool.getActiveCount() ;
                 logger.debug("scan queues ....");
                 // 将重调的作业插入队列中，优先级默认为100
-                jdbcTemplate.update("INSERT INTO T_JOB_QUEUE (JOB_ID,DATA_DATE,PRIORTY) " +
-                        "                   SELECT b.JOB_ID,B.DATA_DATE,10000 " +
-                        "                     FROM T_ERR_INST A" +
-                        "                           JOIN T_JOB_INST B ON A.INST_ID=B.INST_ID" +
-                        "                    WHERE A.STATUS=1");
+                jdbcTemplate.update("INSERT INTO t_job_queue (job_id,data_date,priorty) " +
+                        "                   SELECT b.job_id,b.data_date,10000 " +
+                        "                     FROM t_err_inst a" +
+                        "                           JOIN t_job_inst b ON a.inst_id=b.inst_id" +
+                        "                    WHERE a.status=1");
                 // 删除重调的作业
-                jdbcTemplate.update("delete from T_ERR_INST WHERE STATUS=1");
-                List<Map<String, Object>> queues = jdbcTemplate.queryForList("select QUEUE_ID, JOB_ID, DATA_DATE FROM t_JOB_QUEUE ORDER BY cast(DATA_DATE as char), PRIORTY DESC LIMIT " + runningCnt);
+                jdbcTemplate.update("delete from t_err_inst WHERE status=1");
+                List<Map<String, Object>> queues = jdbcTemplate.queryForList("select queue_id, job_id, data_date FROM t_job_queue ORDER BY cast(data_date as char), priorty DESC LIMIT " + runningCnt);
                 for (Map<String, Object> queue: queues) {
                     final int jobId = Integer.parseInt(queue.get("JOB_ID").toString());
                     final int queueId = Integer.parseInt(queue.get("QUEUE_ID").toString());

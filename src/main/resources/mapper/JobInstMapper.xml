@@ -28,13 +28,13 @@
               left join t_job_def c on a.job_id=c.job_id
       Where 1=1
         <if test="jobInst.dataDate != null" >
-            AND A.data_date like concat(#{jobInst.dataDate},'%')
+            AND a.data_date like concat(#{jobInst.dataDate},'%')
         </if>
         <if test="jobInst.jobId != null and jobInst.jobId != 0">
-            AND A.job_id like CONCAT(${jobInst.jobId},'%')
+            AND a.job_id like CONCAT(${jobInst.jobId},'%')
         </if>
         <if test="jobInst.status != null and jobInst.status != -1">
-            AND A.status = ${jobInst.status}
+            AND a.status = ${jobInst.status}
         </if>
         order by a.start_time desc,a.data_date desc
         limit #{pageIndex}, #{pageSize}
@@ -45,13 +45,13 @@
         from t_job_inst a
         Where 1=1
         <if test="dataDate != null" >
-            AND A.data_date like concat(#{dataDate},'%')
+            AND a.data_date like concat(#{dataDate},'%')
         </if>
         <if test="jobId != null and jobId != 0">
-            AND A.job_id like concat(${jobId},'%')
+            AND a.job_id like concat(${jobId},'%')
         </if>
         <if test="status != null and status != -1">
-            AND A.status = ${status}
+            AND a.status = ${status}
         </if>
     </select>
 

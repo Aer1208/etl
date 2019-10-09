@@ -23,7 +23,7 @@
     <select id="getListForPage" resultMap="UserMap" >
         select
         <include refid="Base_Column_List" />
-        from t_user A
+        from t_user a
         limit #{pageIndex}, #{pageSize}
     </select>
 
