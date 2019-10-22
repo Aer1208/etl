@@ -41,4 +41,9 @@ public class JobLockObjServiceImpl implements JobLockObjService {
     public int delete(JobLockObj jobLockObj) {
         return jobLockObjMapper.delete(jobLockObj);
     }
+
+    @Override
+    public List<JobLockObj> getJobLockObjByName(JobLockObj jobLockObj) {
+        return jobLockObjMapper.getJobLockObjByLockObj(jobLockObj);
+    }
 }

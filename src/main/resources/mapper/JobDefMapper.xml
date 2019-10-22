@@ -16,9 +16,10 @@
         <result column="cron_desc" property="cronDesc" jdbcType="VARCHAR" />
         <result column="job_cycle" property="jobCycle" jdbcType="INTEGER" />
         <result column="cycle_unit" property="cycleUnit" jdbcType="INTEGER" />
+        <result column="user_id" property="userId" jdbcType="INTEGER" />
     </resultMap>
     <sql id="Base_Column_List" >
-        a.job_id,a.job_name,a.cmd_nam,a.cmd_path,a.cmd_typ,a.job_valid,a.job_group,a.max_instance,a.priorty,a.cron_desc, a.job_cycle, a.cycle_unit
+        a.job_id,a.job_name,a.cmd_nam,a.cmd_path,a.cmd_typ,a.job_valid,a.job_group,a.max_instance,a.priorty,a.cron_desc, a.job_cycle, a.cycle_unit,user_id
     </sql>
     <select id="getById" resultMap="JobDefMap" parameterType="java.lang.Integer" >
         select
@@ -58,16 +59,21 @@
         left join (
            select a.job_id,a.data_date, a. status,a.inst_id
            from t_job_inst a
-           join (
-           select job_id,
-           max(start_time) start_time
-           from t_job_inst
-           group by job_id
-           ) b on a.job_id = b.job_id and a.start_time = b.start_time
+                join (
+               select job_id,
+                      max(start_time) start_time
+                 from t_job_inst
+                where start_time >= timestampadd(DAY,-10,current_date())
+                group by job_id
+                ) b on a.job_id = b.job_id and a.start_time = b.start_time
+         where a.start_time >= timestampadd(DAY,-10,current_date())
            ) b on a.job_id=b.job_id
         where a.job_valid=1
         <if test="key != null">
             and (a.job_id like concat(#{key},'%') or a.job_name like concat(#{key},'%') or a.cmd_nam like concat(#{key},'%'))
+        </if>
+        <if test="userId != null and userId !=0 and userId != 1" >
+            and a.user_id = #{userId}
         </if>
         order by case when b.inst_id is null then -1 else b.status end,b.data_date
         limit #{pageIndex}, #{pageSize}
@@ -80,6 +86,9 @@
           <if test="key != null">
               and (job_id like concat(#{key},'%') or job_name like concat(#{key},'%') or cmd_nam like concat(#{key},'%'))
           </if>
+        <if test="userId != null and userId !=0 and userId != 1" >
+            and a.user_id = #{userId}
+        </if>
     </select>
 
     <select id="getListForPage2" resultMap="JobDefMap" parameterType="HashMap">
@@ -89,6 +98,9 @@
       Where 1=1
         <if test="jobDef.jobId != null and jobDef.jobId !=0">
             and job_id like concat(#{jobDef.jobId},'%')
+        </if>
+        <if test="jobDef.userId != null and jobDef.userId !=0 and jobDef.userId != 1" >
+            and user_id = #{jobDef.userId}
         </if>
         order by job_id
         limit #{pageIndex}, #{pageSize}
@@ -100,6 +112,9 @@
         <if test="jobId != null and jobId !=0">
             and job_id like concat(#{jobId},'%')
         </if>
+        <if test="userId != null and userId !=0 and userId != 1" >
+            and user_id = #{userId}
+        </if>
     </select>
 
     <select id="getListForPage3" resultMap="JobDefMap" parameterType="HashMap">
@@ -110,6 +125,9 @@
         Where b.job_id is null
         <if test="key != null">
             and (job_id like concat(#{key},'%') or job_name like concat(#{key},'%') or cmd_nam like concat(#{key},'%'))
+        </if>
+        <if test="userId != null and userId !=0 and userId != 1" >
+            and user_id = #{userId}
         </if>
         order by job_id
         limit #{pageIndex}, #{pageSize}
@@ -123,6 +141,9 @@
         <if test="key != null">
             and (job_id like concat(#{key},'%') or job_name like concat(#{key},'%') or cmd_nam like concat(#{key},'%'))
         </if>
+        <if test="userId != null and userId !=0 and userId != 1" >
+            and user_id = #{userId}
+        </if>
     </select>
 
     <delete id="delete" parameterType="java.lang.Integer" >
@@ -130,10 +151,10 @@
         where job_id = #{dsId,jdbcType=INTEGER}
     </delete>
     <insert id="add" parameterType="com.mongohua.etl.model.JobDef" >
-        insert into t_job_def (job_id,job_name,cmd_nam,cmd_path,cmd_typ,job_valid,job_group,max_instance,priorty,cron_desc,job_cycle,cycle_unit)
+        insert into t_job_def (job_id,job_name,cmd_nam,cmd_path,cmd_typ,job_valid,job_group,max_instance,priorty,cron_desc,job_cycle,cycle_unit,user_id)
         values (#{jobId,jdbcType=INTEGER}, #{jobName,jdbcType=VARCHAR}, #{cmdName,jdbcType=VARCHAR},#{cmdPath, jdbcType=VARCHAR},#{cmdType,jdbcType=INTEGER},
                  #{jobValid, jdbcType=INTEGER},#{jobGroup,jdbcType=VARCHAR},#{maxInstance,jdbcType=INTEGER},#{priorty,jdbcType=INTEGER},
-                 #{cronDesc,jdbcType=VARCHAR},#{jobCycle,jdbcType=INTEGER},#{cycleUnit,jdbcType=INTEGER})
+                 #{cronDesc,jdbcType=VARCHAR},#{jobCycle,jdbcType=INTEGER},#{cycleUnit,jdbcType=INTEGER},#{userId,jdbcType=INTEGER})
     </insert>
 
     <update id="update" parameterType="com.mongohua.etl.model.JobDef">

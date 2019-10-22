@@ -5,6 +5,7 @@ import com.mongohua.etl.schd.DsSchedule;
 import com.mongohua.etl.schd.common.InitDataBase;
 import com.mongohua.etl.service.DsDefService;
 import com.mongohua.etl.utils.Constant;
+import com.mongohua.etl.utils.SecurityUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +91,7 @@ public class DsDefController {
     @RequestMapping(value = "/manager/ds_add",produces = "application/json;charset=utf-8")
     public String dsAdd(DsDef dsDef, String type) {
         int ret = 0;
+        dsDef.setUserId(SecurityUtil.getCurrentUserId());
         if (Constant.ADD.equalsIgnoreCase(type)) {
             ret = dsDefService.add(dsDef);
         } else if (Constant.UPDATE.equalsIgnoreCase(type)) {

@@ -30,6 +30,19 @@
         from t_job_lock_obj a
     </select>
 
+    <select id="getJobLockObjByLockObj" resultMap="LockObjMap" parameterType="com.mongohua.etl.model.JobLockObj">
+        select
+        <include refid="Base_Column_List" />
+        from t_job_lock_obj a
+       where 1=1
+        <if test="lockObj != null">
+            and lock_obj=#{lockObj, jdbcType=VARCHAR}
+        </if>
+        <if test="lockType != null">
+            and lock_type=#{lockType, jdbcType=INTEGER}
+        </if>
+    </select>
+
     <insert id="add" parameterType="com.mongohua.etl.model.JobLockObj" >
         insert into t_job_lock_obj (job_id, lock_obj,lock_type) values
         (#{jobId,jdbcType=INTEGER},#{lockObj, jdbcType=VARCHAR},#{lockType, jdbcType=INTEGER})

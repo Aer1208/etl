@@ -15,17 +15,26 @@
 
     <sql id="Base_Column_List" >
         a.inst_id,a.job_id,a.data_date,a.start_time,a.end_time,a.status,
-        case when b.ds_id is not null then 1 else 2 end jobType,
-        ifnull(b.ds_name, c.job_name) jobName,
-        ifnull(b.src_tab_nam, c.cmd_nam) jobCode
+        b.jobType,
+        b.job_id jobName,
+        b.cmd_nam jobCode
     </sql>
 
     <select id="getList" resultMap="JobInstMap" parameterType="HashMap">
         select
         <include refid="Base_Column_List" />
         from t_job_inst a
-              left join t_ds_def b on a.job_id = b.ds_id
-              left join t_job_def c on a.job_id=c.job_id
+              join (
+              select job_id, job_name,cmd_nam,2 jobType from t_job_def where 1=1
+            <if test="userId != null and userId !=0 and userId != 1" >
+                and user_id = #{userId}
+            </if>
+              union all
+              select ds_id, ds_name, src_tab_nam,1 jobType from t_ds_def where 1=1
+            <if test="userId != null and userId !=0 and userId != 1" >
+                and user_id = #{userId}
+            </if>
+        ) b on a.job_id=b.job_id
       Where 1=1
         <if test="jobInst.dataDate != null" >
             AND a.data_date like concat(#{jobInst.dataDate},'%')
@@ -36,6 +45,7 @@
         <if test="jobInst.status != null and jobInst.status != -1">
             AND a.status = ${jobInst.status}
         </if>
+
         order by a.start_time desc,a.data_date desc
         limit #{pageIndex}, #{pageSize}
     </select>
@@ -43,15 +53,26 @@
     <select id="getCount" parameterType="com.mongohua.etl.model.JobInst" resultType="java.lang.Integer" >
         select count(*)
         from t_job_inst a
+            join (
+                select job_id, job_name,cmd_nam,2 jobType from t_job_def where 1=1
+                <if test="userId != null and userId !=0 and userId != 1" >
+                    and user_id = #{userId}
+                </if>
+                union all
+                select ds_id, ds_name, src_tab_nam,1 jobType from t_ds_def where 1=1
+                <if test="userId != null and userId !=0 and userId != 1" >
+                    and user_id = #{userId}
+                </if>
+            ) b on a.job_id=b.job_id
         Where 1=1
-        <if test="dataDate != null" >
-            AND a.data_date like concat(#{dataDate},'%')
+        <if test="jobInst.dataDate != null" >
+            AND a.data_date like concat(#{jobInst.dataDate},'%')
         </if>
-        <if test="jobId != null and jobId != 0">
-            AND a.job_id like concat(${jobId},'%')
+        <if test="jobInst.jobId != null and jobInst.jobId != 0">
+            AND a.job_id like concat(${jobInst.jobId},'%')
         </if>
-        <if test="status != null and status != -1">
-            AND a.status = ${status}
+        <if test="jobInst.status != null and jobInst.status != -1">
+            AND a.status = ${jobInst.status}
         </if>
     </select>
 

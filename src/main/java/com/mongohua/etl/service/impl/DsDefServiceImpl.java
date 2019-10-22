@@ -5,6 +5,7 @@ import com.mongohua.etl.model.DsDef;
 import com.mongohua.etl.schd.DsSchedule;
 import com.mongohua.etl.service.DsDefService;
 import com.mongohua.etl.utils.PageModel;
+import com.mongohua.etl.utils.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,10 +45,10 @@ public class DsDefServiceImpl implements DsDefService {
         dsDefPageModel.setPageNo(pageNo);
         dsDefPageModel.setPageSize(pageSize);
 
-        int count = dsDefMapper.getCount(key);
+        int count = dsDefMapper.getCount(SecurityUtil.getCurrentUserId(),key);
         dsDefPageModel.setTotal(count);
         int pageIndex = (pageNo - 1) * pageSize;
-        dsDefPageModel.setRows(dsDefMapper.getListForPage(key,pageIndex,pageSize));
+        dsDefPageModel.setRows(dsDefMapper.getListForPage(SecurityUtil.getCurrentUserId(),key,pageIndex,pageSize));
         int totalPage = (int)Math.ceil(count*1.0/pageSize);
         dsDefPageModel.setTotalPage(totalPage);
         return dsDefPageModel;
@@ -63,11 +64,11 @@ public class DsDefServiceImpl implements DsDefService {
         dsDefPageModel.setPageNo(pageNo);
         dsDefPageModel.setPageSize(pageSize);
 
-        int count = dsDefMapper.getCount2();
+        int count = dsDefMapper.getCount2(SecurityUtil.getCurrentUserId());
         dsDefPageModel.setTotal(count);
         int pageIndex = (pageNo - 1) * pageSize;
         List<DsDef> dsDefList2 = new ArrayList<DsDef>();
-        List<DsDef> dsDefList = dsDefMapper.getListForPage2(pageIndex,pageSize);
+        List<DsDef> dsDefList = dsDefMapper.getListForPage2(SecurityUtil.getCurrentUserId(),pageIndex,pageSize);
         for (DsDef dsDef: dsDefList) {
             // 更新调度是否启动状态
             dsDef.setScheduleStatus(dsSchedule.scheduleStauts(dsDef));

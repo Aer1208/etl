@@ -20,6 +20,7 @@
         <result column="job_cycle" property="jobCycle" jdbcType="INTEGER" />
         <result column="cycle_unit" property="cycleUnit" jdbcType="INTEGER" />
         <result column="last_data_date" property="lastDataDate" jdbcType="VARCHAR" />
+        <result column="user_id" property="userId" jdbcType="INTEGER" />
     </resultMap>
     <sql id="Base_Column_List" >
         a.ds_id
@@ -38,6 +39,7 @@
 ,a.ds_valid
 ,a.job_cycle
 ,a.cycle_unit
+,a.user_id
     </sql>
     <select id="getById" resultMap="DsDefMap" parameterType="java.lang.Integer" >
         select
@@ -71,12 +73,13 @@
 ,priorty
 ,ds_valid
 ,job_cycle
-,cycle_unit)
+,cycle_unit
+,user_id)
         values (#{dsId,jdbcType=INTEGER}, #{dsName,jdbcType=VARCHAR}, #{srcTabName,jdbcType=VARCHAR},
         #{srcDbName,jdbcType=VARCHAR},#{srcDbType,jdbcType=VARCHAR},#{srcServIp,jdbcType=VARCHAR},#{srcServPort,jdbcType=VARCHAR},
         #{targetPath,jdbcType=VARCHAR},#{cronDesc, jdbcType=VARCHAR},#{fieldDel,jdbcType=VARCHAR},#{exportCols,jdbcType=VARCHAR},
         #{whereExp,jdbcType=VARCHAR},#{priorty,jdbcType=INTEGER},#{dsValid, jdbcType=INTEGER},#{jobCycle,jdbcType=INTEGER},
-        #{cycleUnit,jdbcType=INTEGER})
+        #{cycleUnit,jdbcType=INTEGER},#{userId,jdbcType=INTEGER})
     </insert>
 
     <update id="update" parameterType="com.mongohua.etl.model.DsDef">
@@ -144,11 +147,17 @@
                         select job_id,
                                 max(start_time) start_time
                           from t_job_inst
+                        where start_time >= timestampadd(DAY,-7,current_date())
                          group by job_id
-                     ) b on a.job_id = b.job_id and a.start_time = b.start_time) b on a.ds_id=b.job_id
+                     ) b on a.job_id = b.job_id and a.start_time = b.start_time
+                    where a.start_time >= timestampadd(DAY,-7,current_date())
+             ) b on a.ds_id=b.job_id
         where ds_valid=1
         <if test="key != null" >
             and (ds_id like concat(#{key},'%') or ds_name like concat(#{key},'%') or src_tab_nam like concat(#{key},'%'))
+        </if>
+        <if test="userId != null and userId !=0 and userId != 1" >
+            and a.user_id = #{userId}
         </if>
         order by case when b.inst_id is null then -1 else b.status end,b.data_date
         limit #{pageIndex}, #{pageSize}
@@ -157,7 +166,11 @@
     <select id="getListForPage2" resultMap="DsDefMap" parameterType="HashMap">
         select
         <include refid="Base_Column_List" />
-        from t_ds_def A
+        from t_ds_def a
+        where 1=1
+        <if test="userId != null and userId !=0 and userId != 1" >
+            and a.user_id = #{userId}
+        </if>
         order by ds_id
         limit #{pageIndex}, #{pageSize}
     </select>
@@ -169,10 +182,16 @@
          <if test="key != null" >
              and (ds_id like concat(#{key},'%') or ds_name like concat(#{key},'%') or src_tab_nam like concat(#{key},'%'))
          </if>
+        <if test="userId != null and userId !=0 and userId != 1" >
+            and a.user_id = #{userId}
+        </if>
     </select>
 
     <select id="getCount2" resultType="java.lang.Integer" >
-        select count(*) from t_ds_def a
+        select count(*) from t_ds_def a where 1=1
+        <if test="userId != null and userId !=0 and userId != 1" >
+            and a.user_id = #{userId}
+        </if>
     </select>
 
     <update id="dsInvalid" >

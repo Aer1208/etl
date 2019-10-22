@@ -46,33 +46,37 @@ public interface DsDefMapper {
 
     /**
      * 查询符合条件的作业运行实例列表
+     * @param userId 用户id
      * @param  key 搜索关键字
      * @param pageIndex 查询起始编号
      * @param pageSize  查询页大小
      * @return
      */
-    public List<DsDef> getListForPage(@Param("key") String key,@Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize);
+    public List<DsDef> getListForPage(@Param("userId") int userId,@Param("key") String key,@Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize);
 
     /**
      * 查询有效的数据源总记录数
+     * @param userId 用户id
      * @param  key 搜索关键字
      * @return
      */
-    public int getCount(@Param("key") String key);
+    public int getCount(@Param("userId") int userId,@Param("key") String key);
 
     /**
      * 查询符合条件的作业运行实例列表, 不包含数据源最后运行信息
+     * @param userId 用户id
      * @param pageIndex 查询起始编号
      * @param pageSize  查询页大小
      * @return
      */
-    public List<DsDef> getListForPage2(@Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize);
+    public List<DsDef> getListForPage2(@Param("userId") int userId,@Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize);
 
     /**
      * 查询全部数据源记录数
+     * @param userId 用户id
      * @return
      */
-    public int getCount2();
+    public int getCount2(@Param("userId") int userId);
 
     /**
      * 将制定数据源列表修改为无效

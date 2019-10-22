@@ -72,6 +72,11 @@ public class DsDef extends Cycle{
      */
     private int scheduleStatus;
 
+    /**
+     * 用户id
+     */
+    private int userId;
+
     public int getScheduleStatus() {
         return scheduleStatus;
     }
@@ -200,4 +205,11 @@ public class DsDef extends Cycle{
         this.dsValid = dsValid;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 }

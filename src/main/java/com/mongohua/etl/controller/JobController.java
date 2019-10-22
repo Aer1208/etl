@@ -6,10 +6,7 @@ import com.mongohua.etl.model.*;
 import com.mongohua.etl.schd.JobSchedule;
 import com.mongohua.etl.schd.NotRefSchedule;
 import com.mongohua.etl.schd.common.InitDataBase;
-import com.mongohua.etl.service.JobDefService;
-import com.mongohua.etl.service.JobInstService;
-import com.mongohua.etl.service.JobParamDefService;
-import com.mongohua.etl.service.JobRefServuce;
+import com.mongohua.etl.service.*;
 import com.mongohua.etl.utils.PageModel;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +46,9 @@ public class JobController {
 
     @Autowired
     private NotRefSchedule notRefSchedule;
+
+    @Autowired
+    private JobLockObjService jobLockObjService;
 
     /**
      * 作业运行实例请求页面
@@ -375,6 +375,16 @@ public class JobController {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("rows",listForPage.getRows());
         jsonObject.put("total",listForPage.getTotal());
+        return jsonObject.toString();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/manager/check_job_lock",produces = "application/json;charset=utf-8")
+    public String checkJobLock(@RequestBody JobLockObj jobLockObj) {
+        List<JobLockObj> jobLockObjs = jobLockObjService.getJobLockObjByName(jobLockObj);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("status","1");
+        jsonObject.put("total",jobLockObjs.size());
         return jsonObject.toString();
     }
 }

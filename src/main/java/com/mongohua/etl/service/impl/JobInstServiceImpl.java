@@ -4,6 +4,7 @@ import com.mongohua.etl.mapper.JobInstMapper;
 import com.mongohua.etl.model.JobInst;
 import com.mongohua.etl.service.JobInstService;
 import com.mongohua.etl.utils.PageModel;
+import com.mongohua.etl.utils.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,10 +31,10 @@ public class JobInstServiceImpl implements JobInstService {
         jobInstPageModel.setPageNo(pageNo);
         jobInstPageModel.setPageSize(pageSize);
 
-        int count = jobInstMapper.getCount(jobInst);
+        int count = jobInstMapper.getCount(SecurityUtil.getCurrentUserId(),jobInst);
         jobInstPageModel.setTotal(count);
         int pageIndex = (pageNo - 1) * pageSize;
-        jobInstPageModel.setRows(jobInstMapper.getList(jobInst,pageIndex,pageSize));
+        jobInstPageModel.setRows(jobInstMapper.getList(SecurityUtil.getCurrentUserId(),jobInst,pageIndex,pageSize));
         int totalPage = (int)Math.ceil(count*1.0/pageSize);
         jobInstPageModel.setTotalPage(totalPage);
         return jobInstPageModel;

@@ -183,29 +183,48 @@ $(function () {
        jobLockObj.jobId=$("#jobId").val();
        jobLockObj.lockObj = $("#tableName").val();
        jobLockObj.lockType=1;
-       // alert(JSON.stringify({jobDef:param, jobParamDefs:jobparamArray,jobRefs:jobrefArray,jobLockObj:jobLockObj}));
+
        $.ajax({
-           url:'submit_job',
-           data:JSON.stringify({jobDef:param, jobParamDefs:jobparamArray,jobRefs:jobrefArray,jobLockObj:jobLockObj}),
+           url:'check_job_lock',
+           data:JSON.stringify(jobLockObj),
            contentType:'application/json;charset=utf-8',
-           type:"post",
-           success:function(data) {
-               if (data.status == 0) {
-                   $.messager.alert("系统提示", "添加成功：添加作业定义记录" + data.addJobCnt + "条，添加参数记录" + data.addjobParamCnt + "条，添加依赖" + data.addjobRefCnt + "条", "INFO",function(){
-                       $.messager.confirm("系统提示","是否关闭新增作业页面",function (flag) {
-                           if (flag) {
-                               window.parent.closeTabs('新增作业');
+           type:'post',
+           success:function (data) {
+               // $.messager.alert("系统提示",data,"INFO");
+               if (data.status==0 || data.total==0) {
+                   // alert(JSON.stringify({jobDef:param, jobParamDefs:jobparamArray,jobRefs:jobrefArray,jobLockObj:jobLockObj}));
+                   $.ajax({
+                       url:'submit_job',
+                       data:JSON.stringify({jobDef:param, jobParamDefs:jobparamArray,jobRefs:jobrefArray,jobLockObj:jobLockObj}),
+                       contentType:'application/json;charset=utf-8',
+                       type:"post",
+                       success:function(data) {
+                           if (data.status == 0) {
+                               $.messager.alert("系统提示", "添加成功：添加作业定义记录" + data.addJobCnt + "条，添加参数记录" + data.addjobParamCnt + "条，添加依赖" + data.addjobRefCnt + "条", "INFO",function(){
+                                   $.messager.confirm("系统提示","是否关闭新增作业页面",function (flag) {
+                                       if (flag) {
+                                           window.parent.closeTabs('新增作业');
+                                       }
+                                   })
+                               });
+                           } else {
+                               $.messager.alert("系统提示", "添加失败：" + data.ret , "INFO");
                            }
-                       })
-                   });
-               } else {
-                   $.messager.alert("系统提示", "添加失败：" + data.ret , "INFO");
+                       },
+                       error:function (data) {
+                           $.messager.alert("系统提示","失败：" +JSON.stringify(data),"INFO");
+                       }
+                   })
+               }else if (data.status ==0 || data.total >= 1) {
+                   $.messager.alert("系统提示","表名已存在，请检查！","WARN");
                }
            },
            error:function (data) {
                $.messager.alert("系统提示","失败：" +JSON.stringify(data),"INFO");
            }
        })
+
+
    });
 
    $("#btnCancel").click(function () {

@@ -57,6 +57,11 @@ public class JobDef extends Cycle{
      */
     private String lastDataDate;
 
+    /**
+     * 所属用户
+     */
+    private Integer userId;
+
     public int getLastStatus() {
         return lastStatus;
     }
@@ -153,4 +158,11 @@ public class JobDef extends Cycle{
         this.maxInstance = maxInstance;
     }
 
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 }

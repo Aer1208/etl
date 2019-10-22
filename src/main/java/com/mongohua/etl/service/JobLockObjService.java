@@ -42,4 +42,11 @@ public interface JobLockObjService {
      */
     public int delete(JobLockObj jobLockObj);
 
+    /**
+     * 根据表名检查表是否存在t_job_lock_obj
+     * @param jobLockObj
+     * @return
+     */
+    public List<JobLockObj> getJobLockObjByName(JobLockObj jobLockObj);
+
 }
