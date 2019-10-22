@@ -54,6 +54,20 @@ var TOOL_BAR = [{
             $.messager.alert('提示', '请选择一条记录!', 'info');  //提示信息
         }
     }
+},{
+    text:'-',
+    float:"left"
+},{
+    id:'searchBtn',
+    float:"right",
+    iconCls:'icon-search',
+    handler:function () {
+        searchJob();
+    }
+},{
+    id:"searchTxt",
+    float:"right",
+    text:'<input id="searchJobTxt" type="text" style="padding: 1px;height: 100%" />'
 }];
 
 Date.prototype.format = function(format) {
@@ -117,5 +131,28 @@ $(function() {
                 else return "<span style=\"color:red\" >未启动</span>";
             }}
         ]]
+    });
+
+    $("#searchJobTxt").bind("keypress",function (event) {
+        if (event.keyCode == "13") {
+            searchJob();
+        }
+    });
+
+    $("#searchJobBtn").click(function () {
+        searchJob();
     })
 });
+
+function searchJob() {
+    var searchJobTxt = $("#searchJobTxt").val();
+    var queryParams = $('#tt').datagrid('options').queryParams={
+        page:1,
+        rows:40
+    };
+    if ("" != searchJobTxt) {
+        queryParams.key = searchJobTxt;
+    }
+
+    $("#tt").datagrid("reload");
+}

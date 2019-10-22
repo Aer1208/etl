@@ -59,6 +59,70 @@ var TOOL_BAR = [ {
             $.messager.alert('提示', '请至少选择一条失败的实例记录!', 'info');  //提示信息
         }
     }
+},{
+    id :"child",
+    text : '查看后续作业',
+    iconCls : 'icon-up',
+    handler : function() {
+        var selectedArray = $('#tt').datagrid('getSelections');  //返回被选择的行
+        if(selectedArray.length==1) {
+            $("#child_job_window").window({
+                width: "900",
+                height: "680",
+                title: "查看" + selectedArray[0].jobId + '后续作业',
+                modal: true,
+                minimizable: false,
+                closed: true
+            });
+            $("#childjobtt").treegrid({
+                url:"next_job?jobId="+selectedArray[0].jobId,
+                fitColumns : true,
+                fit:false,
+                idField:"jobId",
+                treeField:"jobId",
+                columns:[[
+                    { field:'jobId',title:'作业ID',width:40,sortable:true,align:'center'},
+                    { field:'jobName',title:'作业名',width:120,sortable:true,align:'center'},
+                    { field:'cmdName',title:'作业程序',width:120,sortable:true,align:'center'}
+                ]]
+            });
+            $("#child_job_window").window('open');
+        }else {
+            $.messager.alert('提示', '请选择一条记录!', 'info');  //提示信息
+        }
+    }
+},{
+    id :"parent",
+    text : '查看前置作业',
+    iconCls : 'icon-down',
+    handler : function() {
+        var selectedArray = $('#tt').datagrid('getSelections');  //返回被选择的行
+        if(selectedArray.length==1) {
+            $("#parent_job_window").window({
+                width: "900",
+                height: "680",
+                title: "查看" + selectedArray[0].jobId + '前置作业',
+                modal: true,
+                minimizable: false,
+                closed: true
+            });
+            $("#parentjobtt").treegrid({
+                url:"pre_job?jobId="+selectedArray[0].jobId,
+                fitColumns : true,
+                fit:false,
+                idField:"jobId",
+                treeField:"jobId",
+                columns:[[
+                    { field:'jobId',title:'作业ID',width:40,sortable:true,align:'center'},
+                    { field:'jobName',title:'作业名',width:120,sortable:true,align:'center'},
+                    { field:'cmdName',title:'作业程序',width:120,sortable:true,align:'center'}
+                ]]
+            });
+            $("#parent_job_window").window('open');
+        }else {
+            $.messager.alert('提示', '请选择一条记录!', 'info');  //提示信息
+        }
+    }
 }];
 
 Date.prototype.format = function(format) {

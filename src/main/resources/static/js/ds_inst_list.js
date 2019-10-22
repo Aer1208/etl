@@ -87,7 +87,7 @@ var TOOL_BAR = [ {
     id :"child",
     text : '查看后续作业',
     float:'left',
-    iconCls : 'icon-search',
+    iconCls : 'icon-up',
     handler : function() {
         var selectedArray = $('#tt').datagrid('getSelections');  //返回被选择的行
         if(selectedArray.length==1) {

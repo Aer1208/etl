@@ -55,3 +55,9 @@
 .icon-invalid{
 	background:url('icons/invalid.png') no-repeat;
 }
+.icon-up {
+	background:url("icons/up.png") no-repeat;
+}
+.icon-down {
+	background:url("icons/down.png") no-repeat;
+}
