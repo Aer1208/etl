@@ -16,7 +16,7 @@
     <sql id="Base_Column_List" >
         a.inst_id,a.job_id,a.data_date,a.start_time,a.end_time,a.status,
         b.jobType,
-        b.job_id jobName,
+        b.job_name jobName,
         b.cmd_nam jobCode
     </sql>
 
