@@ -4,9 +4,12 @@ import com.mongohua.etl.model.JobDef;
 import com.mongohua.etl.schd.common.InitDataBase;
 import com.mongohua.etl.schd.common.InitJdbc;
 import com.mongohua.etl.schd.common.JobReadWriterLock;
+import com.mongohua.etl.schd.job.Job;
 import com.mongohua.etl.schd.job.ShellJob;
 import com.mongohua.etl.schd.job.SqoopJob;
 import com.mongohua.etl.utils.Constant;
+import com.mongohua.etl.utils.SpringContextUtil;
+import org.apache.shiro.config.Ini;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,12 +163,16 @@ public class JobSchedule extends InitJdbc{
                                 e.printStackTrace();
                             }
 
-                            if (jobId < Constant.MIN_JOB_ID) {
-                                // 如果作业号小于20000000，则认为是数据源重调
-                                sqoopJob.run(jobId, vDate);
-                            } else {
+//                            if (jobId < Constant.MIN_JOB_ID) {
+                            if (InitDataBase.jobDefMap.containsKey(jobId)){
                                 // 执行作业
                                 shellJob.run(jobId, vDate);
+                            } else if (InitDataBase.dsDefMap.containsKey(jobId)) {
+                                // 如果作业号小于20000000，则认为是数据源重调
+                                Job job = (Job)SpringContextUtil.getBean("sqoopJob");
+                                job.run(jobId, vDate);
+                            } else  {
+                                logger.warn("job_id={} not run, please check configure for job and ds");
                             }
                         }
                     });

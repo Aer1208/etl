@@ -36,7 +36,7 @@ CREATE TABLE `t_ds_def` (
   `DS_VALID` int(11) DEFAULT NULL COMMENT '1：有效；0：失效',
   `JOB_CYCLE` int(11) DEFAULT '1' COMMENT '作业运行周期',
   `CYCLE_UNIT` smallint(6) DEFAULT '1' COMMENT '作业运行周期单位:0:小时，1：天，2：月，3：年',
-  user_id int default null comment '用户id'
+  user_id int default null comment '用户id',
   PRIMARY KEY (`DS_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -78,7 +78,7 @@ CREATE TABLE `t_job_def` (
   `CRON_DESC` varchar(255) DEFAULT NULL COMMENT '作业定时任务表达式',
   `JOB_CYCLE` int(11) DEFAULT NULL COMMENT '作业运行周期',
   `CYCLE_UNIT` int(11) DEFAULT NULL COMMENT '作业运行周期单位：\r\n0：小时\r\n1：天\r\n2：月\r\n3：年',
-  user_id  int default null comment '用户id'
+  user_id  int default null comment '用户id',
   PRIMARY KEY (`JOB_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

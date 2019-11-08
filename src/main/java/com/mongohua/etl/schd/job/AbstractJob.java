@@ -17,6 +17,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -55,14 +56,14 @@ public abstract class AbstractJob extends InitJdbc implements Job {
     @Override
     public void run(final int jobId, final String vDate) {
 
-        if (jobId >= Constant.MIN_JOB_ID) {
+        if (InitDataBase.jobDefMap.containsKey(jobId)) {
             // 普通作业
             JobDef jobDef = InitDataBase.jobDefMap.get(jobId);
             if (jobDef == null || jobDef.getJobValid() != 1) {
                 logger.warn("job_id={},data_date={} not found... please check or refresh", jobId,vDate);
                 return;
             }
-        } else {
+        } else if (InitDataBase.dsDefMap.containsKey(jobId)) {
             // 数据源
             DsDef dsDef = InitDataBase.dsDefMap.get(jobId);
             if (dsDef == null || dsDef.getDsValid() != 1) {
@@ -156,10 +157,12 @@ public abstract class AbstractJob extends InitJdbc implements Job {
      * @param ret
      */
     private void insertLog(long instId, String ret) {
-        synchronized (LOCK) {
-            ret = ret.length() > 4096 ? ret.substring(ret.length() - 4096) : ret;
-            // 插入执行日志
-            jdbcTemplate.update("insert into t_inst_log (inst_id,job_log) values(?,?)", instId, ret);
+        if (!StringUtils.isEmpty(ret)) {
+            synchronized (LOCK) {
+                ret = ret.length() > 4096 ? ret.substring(ret.length() - 4096) : ret;
+                // 插入执行日志
+                jdbcTemplate.update("insert into t_inst_log (inst_id,job_log) values(?,?)", instId, ret);
+            }
         }
     }
 

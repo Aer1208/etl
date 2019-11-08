@@ -9,7 +9,7 @@ var TOOL_BAR = [ {
         $("#dsName").val('');
         $("#srcTabName").val('');
         $("#srcDbName").val('');
-        $("#srcDbType").val('MYSQL');
+        $("#srcDbType").combobox('setValue','MYSQL');
         $("#srcServIp").val('');
         $("#srcServPort").val('3306');
         $("#targetPath").val('');
@@ -250,7 +250,41 @@ $(function() {
 
     $('#dsValid').combobox(validOption);
 
-    $("#cycleUnit").combobox(cycleOption)
+    $("#cycleUnit").combobox(cycleOption);
+
+    $("#srcDbType").combobox({
+        valueField: 'value',
+        textField: 'label',
+        value:1,
+        data:[{
+            label:"MYSQL",
+            value:"MYSQL",
+            port:3306
+        },{
+            label:"ORACLE",
+            value:"ORACLE",
+            port:1521
+        },{
+            label:"IBM DB2",
+            value:"DB2",
+            port:5000
+        },{
+            label:"SQL Server",
+            value:"SQLSERVER",
+            port:1433
+        },{
+            label:"SYBASE",
+            value:"SYBASE",
+            port:5007
+        },{
+            label:"PostgreSQL",
+            value:"POSTGRESQL",
+            port:5432
+        }],
+        onSelect:function (item) {
+            $("#srcServPort").val(item.port)
+        }
+    });
 
     $('#save').click(function() {
         var url = "ds_add";
@@ -259,7 +293,7 @@ $(function() {
         var dsName = $("#dsName").val().trim();
         var srcTabName = $("#srcTabName").val().trim();
         var srcDbName = $("#srcDbName").val().trim();
-        var srcDbType = $("#srcDbType").val().trim();
+        var srcDbType = $("#srcDbType").combobox("getValue");
         var srcServIp = $("#srcServIp").val().trim();
         var srcServPort = $("#srcServPort").val().trim();
         var targetPath = $("#targetPath").val().trim();
