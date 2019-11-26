@@ -45,8 +45,8 @@ public class ConfigUtils {
         String servIp = dsDef.getSrcServIp();
         String dbName = dsDef.getSrcDbName();
         String dbType = dsDef.getSrcDbType().toLowerCase();
-        String key1 = String.format("%s.%s.%s.username",dbType, servIp, dbName);
-        String key2 = String.format("%s.%s.username", dbType, servIp);
+        String key2 = String.format("%s.%s.%s.username",dbType, servIp, dbName);
+        String key1 = String.format("%s.%s.username", dbType, servIp);
         return getString(key1, key2);
     }
 
@@ -59,8 +59,8 @@ public class ConfigUtils {
         String servIp = dsDef.getSrcServIp();
         String dbName = dsDef.getSrcDbName();
         String dbType = dsDef.getSrcDbType().toLowerCase();
-        String key1 = String.format("%s.%s.%s.password",dbType, servIp, dbName);
-        String key2 = String.format("%s.%s.password", dbType, servIp);
+        String key2 = String.format("%s.%s.%s.password",dbType, servIp, dbName);
+        String key1 = String.format("%s.%s.password", dbType, servIp);
         return getString(key1, key2);
     }
 
@@ -73,8 +73,8 @@ public class ConfigUtils {
         String servIp = dsDef.getSrcServIp();
         String dbName = dsDef.getSrcDbName();
         String dbType = dsDef.getSrcDbType().toLowerCase();
-        String key1 = String.format("%s.%s.%s.port",dbType, servIp, dbName);
-        String key2 = String.format("%s.%s.port", dbType, servIp);
+        String key2 = String.format("%s.%s.%s.port",dbType, servIp, dbName);
+        String key1 = String.format("%s.%s.port", dbType, servIp);
         return getString(key1, key2);
     }
 

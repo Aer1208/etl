@@ -75,6 +75,11 @@ public class SqoopJob extends  AbstractJob{
         list.add(dsDef.getFieldDel());
         list.add("--compress");
         list.add("--hive-drop-import-delims");
+        // hive空值转换
+        list.add("--null-string");
+        list.add("\\\\N");
+        list.add("--null-non-string");
+        list.add("\\\\N");
 
         if (dsDef.getExportCols() != null && !"".equalsIgnoreCase(dsDef.getExportCols().trim())) {
             list.add("--columns");
