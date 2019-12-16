@@ -117,6 +117,8 @@ public class SqoopJob extends  AbstractJob{
             jdbcStr = String.format("jdbc:microsoft:%s://%s:%s;DatabaseName=%s",dbType.toLowerCase(),servIp,port,dbName);
         } else if ("sybase".equalsIgnoreCase(dbType)) {
             jdbcStr = String.format("jdbc:%s:Tds:%s:%s/%s",dbType.toLowerCase(),servIp,port,dbName);
+        }else if ("oracle_rac".equalsIgnoreCase(dbType)) {
+            jdbcStr=String.format("jdbc:oracle:thin:@%s:%s/%s", servIp, port, dbName);
         }
         return jdbcStr;
     }

@@ -10,15 +10,11 @@ import java.util.*;
  * 实现对象的读写锁机制
  * @author xiaohf
  */
-public class JobReadWriterLock {
+public class JobReadWriterLock implements ReadWriterLock{
 
-    private final Logger logger = LoggerFactory.getLogger(JobReadWriterLock.class);
+    public final Logger logger = LoggerFactory.getLogger(JobReadWriterLock.class);
 
     private static JobReadWriterLock instance;
-
-    private JobReadWriterLock() {
-
-    }
 
     public static JobReadWriterLock getInstance() {
         if (instance == null) {
@@ -90,7 +86,7 @@ public class JobReadWriterLock {
      * @param jobId
      * @param vDate
      */
-    private synchronized void putQueue(int jobId, String vDate) {
+    public synchronized void putQueue(int jobId, String vDate) {
         String key = jobId + "~" + vDate;
         if (!queues.containsKey(key)) {
             queues.put(key,1);
@@ -102,7 +98,7 @@ public class JobReadWriterLock {
      * @param jobId
      * @param vDate
      */
-    private  synchronized  void clearQueue(int jobId, String vDate) {
+    public   synchronized  void clearQueue(int jobId, String vDate) {
         String key = jobId + "~" + vDate;
         if (queues.containsKey(key)) {
             queues.remove(key);
@@ -217,7 +213,7 @@ public class JobReadWriterLock {
      * @param lockObj
      * @return
      */
-    private synchronized int getReadLockObjCnt(String lockObj) {
+    public synchronized int getReadLockObjCnt(String lockObj) {
         Integer readLockCnt = readLock.get(lockObj);
         if (readLockCnt == null) {
             readLockCnt=0;
@@ -225,7 +221,7 @@ public class JobReadWriterLock {
         return readLockCnt;
     }
 
-    private synchronized int getWriterLockObjCnt(String lockObj) {
+    public synchronized int getWriterLockObjCnt(String lockObj) {
         Integer writerLockCnt = writerLock.get(lockObj);
         if (writerLockCnt == null) {
             writerLockCnt = 0;

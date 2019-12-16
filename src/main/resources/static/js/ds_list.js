@@ -255,7 +255,6 @@ $(function() {
     $("#srcDbType").combobox({
         valueField: 'value',
         textField: 'label',
-        value:1,
         data:[{
             label:"MYSQL",
             value:"MYSQL",
@@ -263,6 +262,10 @@ $(function() {
         },{
             label:"ORACLE",
             value:"ORACLE",
+            port:1521
+        },{
+            label:"ORACLE_RAC",
+            value:"ORACLE_RAC",
             port:1521
         },{
             label:"IBM DB2",
