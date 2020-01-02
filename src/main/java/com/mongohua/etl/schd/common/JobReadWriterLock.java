@@ -3,6 +3,7 @@ package com.mongohua.etl.schd.common;
 import com.mongohua.etl.model.JobLockObj;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
@@ -10,6 +11,7 @@ import java.util.*;
  * 实现对象的读写锁机制
  * @author xiaohf
  */
+@Service("jobReadWriteLock")
 public class JobReadWriterLock implements ReadWriterLock{
 
     public final Logger logger = LoggerFactory.getLogger(JobReadWriterLock.class);

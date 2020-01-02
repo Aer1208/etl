@@ -21,6 +21,7 @@
         <result column="cycle_unit" property="cycleUnit" jdbcType="INTEGER" />
         <result column="last_data_date" property="lastDataDate" jdbcType="VARCHAR" />
         <result column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="host_name" property="hostName" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="Base_Column_List" >
         a.ds_id
@@ -40,6 +41,7 @@
 ,a.job_cycle
 ,a.cycle_unit
 ,a.user_id
+,a.host_name
     </sql>
     <select id="getById" resultMap="DsDefMap" parameterType="java.lang.Integer" >
         select
@@ -74,12 +76,13 @@
 ,ds_valid
 ,job_cycle
 ,cycle_unit
-,user_id)
+,user_id
+,host_name)
         values (#{dsId,jdbcType=INTEGER}, #{dsName,jdbcType=VARCHAR}, #{srcTabName,jdbcType=VARCHAR},
         #{srcDbName,jdbcType=VARCHAR},#{srcDbType,jdbcType=VARCHAR},#{srcServIp,jdbcType=VARCHAR},#{srcServPort,jdbcType=VARCHAR},
         #{targetPath,jdbcType=VARCHAR},#{cronDesc, jdbcType=VARCHAR},#{fieldDel,jdbcType=VARCHAR},#{exportCols,jdbcType=VARCHAR},
         #{whereExp,jdbcType=VARCHAR},#{priorty,jdbcType=INTEGER},#{dsValid, jdbcType=INTEGER},#{jobCycle,jdbcType=INTEGER},
-        #{cycleUnit,jdbcType=INTEGER},#{userId,jdbcType=INTEGER})
+        #{cycleUnit,jdbcType=INTEGER},#{userId,jdbcType=INTEGER},#{hostName,jdbcType=VARCHAR})
     </insert>
 
     <update id="update" parameterType="com.mongohua.etl.model.DsDef">
@@ -129,6 +132,9 @@
             </if>
             <if test="cycleUnit != null">
                 cycle_unit=#{cycleUnit,jdbcType=INTEGER},
+            </if>
+            <if test = "hostName != null" >
+                host_name = #{hostName, jdbcType=VARCHAR},
             </if>
         </trim>
         where ds_id = #{dsId, jdbcType=INTEGER}

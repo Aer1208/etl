@@ -190,7 +190,8 @@ $(function() {
                 if (val ==2) return "作业"
             }},
             { field:'jobName', title:'作业名称',width:180,align:'center'},
-            { field:'jobCode', title:'作业编码',width:200,align:'center'}
+            { field:'jobCode', title:'作业编码',width:200,align:'center'},
+            { field:'hostName', title:'服务器ip', width:100, align:'center'}
         ]]
     });
 

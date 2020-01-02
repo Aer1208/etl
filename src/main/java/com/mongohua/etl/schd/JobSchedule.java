@@ -47,6 +47,9 @@ public class JobSchedule extends InitJdbc{
     @Autowired
     private Environment environment;
 
+    @Autowired
+    private JobReadWriterLock distributedReadWriterLock;
+
     @SuppressWarnings("AlibabaThreadShouldSetName")
     public void schedule() {
 
@@ -132,6 +135,14 @@ public class JobSchedule extends InitJdbc{
                 return ;
             }
             synchronized (RUNNING_LOCK) {
+                // 获取作业运行的host
+                String hostName = environment.getProperty("host_name");
+                // 通知所有阻塞进程
+                try {
+                    notifyAll();
+                }catch (Exception ex) {
+
+                }
                 // 需要从队列中取出的作业数
                 int runningCnt = Integer.parseInt(environment.getProperty(Constant.MAX_RUN_CNT)) - jobThreadPool.getActiveCount() ;
                 logger.debug("scan queues ....");
@@ -140,10 +151,14 @@ public class JobSchedule extends InitJdbc{
                         "                   SELECT b.job_id,b.data_date,10000 " +
                         "                     FROM t_err_inst a" +
                         "                           JOIN t_job_inst b ON a.inst_id=b.inst_id" +
-                        "                    WHERE a.status=1");
+                        "                    WHERE a.status=1" +
+                        "                      AND a.host_name=?",hostName);
                 // 删除重调的作业
-                jdbcTemplate.update("delete from t_err_inst WHERE status=1");
-                List<Map<String, Object>> queues = jdbcTemplate.queryForList("select queue_id, job_id, data_date FROM t_job_queue ORDER BY cast(data_date as char), priorty DESC LIMIT " + runningCnt);
+                jdbcTemplate.update("delete from t_err_inst WHERE status=1 and host_name=?",hostName);
+                List<Map<String, Object>> queues = jdbcTemplate.queryForList(
+                        "select queue_id, job_id, data_date FROM t_job_queue " +
+                        "where host_name=? " +
+                        "ORDER BY cast(data_date as char), priorty DESC LIMIT ?",hostName, runningCnt);
                 for (Map<String, Object> queue: queues) {
                     final int jobId = Integer.parseInt(queue.get("JOB_ID").toString());
                     final int queueId = Integer.parseInt(queue.get("QUEUE_ID").toString());
@@ -158,7 +173,8 @@ public class JobSchedule extends InitJdbc{
 
                             try {
                                 // 获取锁
-                                JobReadWriterLock.getInstance().lock(jobId, vDate);
+//                                JobReadWriterLock.getInstance().lock(jobId, vDate);
+                                distributedReadWriterLock.lock(jobId, vDate);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }

@@ -48,6 +48,7 @@ var TOOL_BAR = [ {
             $("#jobCycle").val(selectedArray[0].jobCycle);
             $("#cycleUnit").combobox("setValue",selectedArray[0].cycleUnit);
             $("#dsValid").combobox("setValue",selectedArray[0].dsValid);
+            $("#hostName").combobox("setValue", selectedArray[0].hostName);
             openWind('ds_from_window','修改数据源');
         }else {
             $.messager.alert('提示', '请选择一条记录!', 'info');  //提示信息
@@ -251,6 +252,11 @@ $(function() {
     $('#dsValid').combobox(validOption);
 
     $("#cycleUnit").combobox(cycleOption);
+    $("#hostName").combobox({
+        textField:'hostName',
+        valueField:'hostIp',
+        url:'/host/list'
+    });
 
     $("#srcDbType").combobox({
         valueField: 'value',
@@ -308,6 +314,7 @@ $(function() {
         var jobCycle=$("#jobCycle").val().trim();
         var cycleUnit=$("#cycleUnit").combobox("getValue");
         var dsValid = $("#dsValid").combobox("getValue");
+        var hostName = $("#hostName").combobox("getValue");
 
         param.dsId=dsId;
         if (checkNotNull(dsId, '数据源ID',param.dsId)) {
@@ -344,6 +351,10 @@ $(function() {
         }
         param.cycleUnit=cycleUnit;
         if(checkNotNull(cycleUnit,'作业周期单位不能为空',param.cycleUnit)) {
+            return ;
+        }
+        param.hostName = hostName
+        if (checkNotNull(hostName, '服务器ip不能为空', param.hostName)) {
             return ;
         }
         param.cronDesc="00 00 7 * * *"
@@ -432,6 +443,7 @@ $(function() {
                 else if (val == 3) return "年";
                 else if (val == 4) return "分";
             }},
+            { field:'hostName', title:'服务器ip',width:120,align:'center'},
             { field:'dsValid', title:'是否有效',width:80,align:'center',formatter:function(val, row,index) {
                 if (val == 1) return "<span style=\"color:green\" >有效</span>";
                 else  return "<span style=\"color:red\" >无效</span>";

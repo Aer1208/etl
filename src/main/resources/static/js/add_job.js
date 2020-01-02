@@ -1,6 +1,11 @@
 var jobParamIndex = undefined;
 var jobRefIndex=undefined;
 $(function () {
+    $("#hostName").combobox({
+        url:'/host/list',
+        valueField:'hostIp',
+        textField:'hostName'
+    })
     $("#cycleUnit").combobox(cycleOption)
    $("#jobparam_tt").datagrid({
        singleSelect:true,
@@ -175,6 +180,7 @@ $(function () {
        param.cronDesc=$("#cronDesc").val();
        param.jobCycle=$("#jobCycle").val();
        param.cycleUnit=$("#cycleUnit").combobox("getValue");
+       param.hostName=$("#hostName").combobox("getValue");
        param.cmdType=1;
        param.maxInstance=3;
        var jobparamArray = $("#jobparam_tt").datagrid("getRows");
@@ -357,6 +363,7 @@ function validateFrom() {
     var tableName=$("#tableName").val();
     var jobCycle = $("#jobCycle").val();
     var cycleUnit = $("#cycleUnit").combobox("getValue");
+    var hostName = $("#hostName").combobox("getValue");
 
     var jobparamArray = $("#jobparam_tt").datagrid("getRows");
     var jobrefArray = $("#jobref_tt").datagrid("getRows");
@@ -383,6 +390,10 @@ function validateFrom() {
     }
     if(cycleUnit == "" || cycleUnit == -1) {
         $.messager.alert("系统提示","请选择作业运行周期单位", "WARN")
+        return false
+    }
+    if (hostName == "") {
+        $.messager.alert("系统提示","请选择服务器ip", "WARN")
         return false
     }
     return true;

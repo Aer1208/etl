@@ -37,6 +37,7 @@ CREATE TABLE `t_ds_def` (
   `JOB_CYCLE` int(11) DEFAULT '1' COMMENT '作业运行周期',
   `CYCLE_UNIT` smallint(6) DEFAULT '1' COMMENT '作业运行周期单位:0:小时，1：天，2：月，3：年',
   user_id int default null comment '用户id',
+  host_name varchar(20) null default '10.203.20.7' comment '作业运行host',
   PRIMARY KEY (`DS_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -47,6 +48,7 @@ DROP TABLE IF EXISTS `t_err_inst`;
 CREATE TABLE `t_err_inst` (
   `INST_ID` bigint(20) NOT NULL COMMENT '实例ID',
   `STATUS` smallint(6) NOT NULL COMMENT '作业运行状态，0:出错，1:重跑出错作业',
+  host_name varchar(20) null default '10.203.20.7' comment '作业运行host',
   PRIMARY KEY (`INST_ID`,`STATUS`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -79,6 +81,7 @@ CREATE TABLE `t_job_def` (
   `JOB_CYCLE` int(11) DEFAULT NULL COMMENT '作业运行周期',
   `CYCLE_UNIT` int(11) DEFAULT NULL COMMENT '作业运行周期单位：\r\n0：小时\r\n1：天\r\n2：月\r\n3：年',
   user_id  int default null comment '用户id',
+  host_name varchar(20) null default '10.203.20.7' comment '作业运行host',
   PRIMARY KEY (`JOB_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -107,6 +110,7 @@ CREATE TABLE `t_job_inst` (
   `START_TIME` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '作业运行开始日期',
   `END_TIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '作业运行结束日期',
   `STATUS` smallint(6) DEFAULT NULL COMMENT '作业运行状态',
+  host_name varchar(20) null default '10.203.20.7' comment '作业运行host',
   PRIMARY KEY (`INST_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=327277 DEFAULT CHARSET=utf8;
 
@@ -236,3 +240,9 @@ CREATE TABLE `t_user_role` (
   PRIMARY KEY (`user_id`,`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET FOREIGN_KEY_CHECKS=1;
+
+create table t_host (
+  `host_ip` varchar(20)  NOT NULL comment '服务器ip',
+  `host_name` varchar(20) NULL comment '服务器名称',
+  primary key (`host_ip`)
+) comment '服务器地址表';

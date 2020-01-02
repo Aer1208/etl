@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mongohua.etl.mapper.HostMapper" >
+    <resultMap id="DsDefMap" type="com.mongohua.etl.model.Host" >
+        <id column="host_ip" property="hostIp" jdbcType="VARCHAR" />
+        <result column="host_name" property="hostName" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        a.host_ip
+       ,a.host_name
+    </sql>
+
+    <select id="getList" resultMap="DsDefMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_host a
+    </select>
+</mapper>

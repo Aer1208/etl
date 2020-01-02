@@ -17,9 +17,10 @@
         <result column="job_cycle" property="jobCycle" jdbcType="INTEGER" />
         <result column="cycle_unit" property="cycleUnit" jdbcType="INTEGER" />
         <result column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="host_name" property="hostName" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="Base_Column_List" >
-        a.job_id,a.job_name,a.cmd_nam,a.cmd_path,a.cmd_typ,a.job_valid,a.job_group,a.max_instance,a.priorty,a.cron_desc, a.job_cycle, a.cycle_unit,a.user_id
+        a.job_id,a.job_name,a.cmd_nam,a.cmd_path,a.cmd_typ,a.job_valid,a.job_group,a.max_instance,a.priorty,a.cron_desc, a.job_cycle, a.cycle_unit,a.user_id,a.host_name
     </sql>
     <select id="getById" resultMap="JobDefMap" parameterType="java.lang.Integer" >
         select
@@ -151,10 +152,10 @@
         where job_id = #{dsId,jdbcType=INTEGER}
     </delete>
     <insert id="add" parameterType="com.mongohua.etl.model.JobDef" >
-        insert into t_job_def (job_id,job_name,cmd_nam,cmd_path,cmd_typ,job_valid,job_group,max_instance,priorty,cron_desc,job_cycle,cycle_unit,user_id)
+        insert into t_job_def (job_id,job_name,cmd_nam,cmd_path,cmd_typ,job_valid,job_group,max_instance,priorty,cron_desc,job_cycle,cycle_unit,user_id,host_name)
         values (#{jobId,jdbcType=INTEGER}, #{jobName,jdbcType=VARCHAR}, #{cmdName,jdbcType=VARCHAR},#{cmdPath, jdbcType=VARCHAR},#{cmdType,jdbcType=INTEGER},
                  #{jobValid, jdbcType=INTEGER},#{jobGroup,jdbcType=VARCHAR},#{maxInstance,jdbcType=INTEGER},#{priorty,jdbcType=INTEGER},
-                 #{cronDesc,jdbcType=VARCHAR},#{jobCycle,jdbcType=INTEGER},#{cycleUnit,jdbcType=INTEGER},#{userId,jdbcType=INTEGER})
+                 #{cronDesc,jdbcType=VARCHAR},#{jobCycle,jdbcType=INTEGER},#{cycleUnit,jdbcType=INTEGER},#{userId,jdbcType=INTEGER},#{hostName, jdbcType=VARCHAR})
     </insert>
 
     <update id="update" parameterType="com.mongohua.etl.model.JobDef">
@@ -186,6 +187,9 @@
             </if>
             <if test="cycleUnit != null">
                 cycle_unit=#{cycleUnit,jdbcType=INTEGER},
+            </if>
+            <if test="hostName != null" >
+                host_name=#{hostName, jdbcType=VARCHAR},
             </if>
         </trim>
         where job_id = #{jobId, jdbcType=INTEGER}

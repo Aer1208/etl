@@ -4,6 +4,7 @@ import com.mongohua.etl.utils.RedisUtil;
 import groovy.util.logging.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +14,7 @@ import java.util.concurrent.locks.Lock;
 /**
  * 使用Redis实现分布式读写锁机制
  */
-@Component
+@Service("distributedReadWriterLock")
 @Slf4j
 public class DistributedReadWriterLock extends JobReadWriterLock {
 

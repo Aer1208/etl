@@ -11,13 +11,15 @@
         <result column="jobType" property="jobType" jdbcType="INTEGER" />
         <result column="jobName" property="jobName" jdbcType="VARCHAR" />
         <result column="jobCode" property="jobCode" jdbcType="VARCHAR" />
+        <result column="host_name" property="hostName" jdbcType="VARCHAR" />
     </resultMap>
 
     <sql id="Base_Column_List" >
         a.inst_id,a.job_id,a.data_date,a.start_time,a.end_time,a.status,
         b.jobType,
         b.job_name jobName,
-        b.cmd_nam jobCode
+        b.cmd_nam jobCode,
+        a.host_name
     </sql>
 
     <select id="getList" resultMap="JobInstMap" parameterType="HashMap">

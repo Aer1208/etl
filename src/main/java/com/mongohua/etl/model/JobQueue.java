@@ -28,6 +28,11 @@ public class JobQueue {
      */
     private int status;
 
+    /**
+     * 作业运行服务地址
+     */
+    private String hostName;
+
     public int getQueueId() {
         return queueId;
     }
@@ -66,5 +71,13 @@ public class JobQueue {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 }

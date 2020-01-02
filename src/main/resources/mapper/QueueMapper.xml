@@ -6,9 +6,10 @@
         <result column="job_id" property="jobId" jdbcType="INTEGER" />
         <result column="data_date" property="dataDate" jdbcType="VARCHAR" />
         <result column="PRIORTY" property="priorty" jdbcType="INTEGER" />
+        <result column="host_name" property="hostName" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="Base_Column_List" >
-        queue_id, job_id, data_date, priorty
+        queue_id, job_id, data_date, priorty,host_name
     </sql>
 
     <select id="getList" resultMap="QueueMap">
@@ -26,8 +27,8 @@
         </foreach>
     </delete>
     <insert id="add" parameterType="com.mongohua.etl.model.JobQueue" >
-        insert into t_job_queue (job_id,data_date,priorty)
-        values (#{jobId,jdbcType=INTEGER}, #{dataDate,jdbcType=VARCHAR}, #{priorty,jdbcType=INTEGER})
+        insert into t_job_queue (job_id,data_date,priorty,host_name)
+        values (#{jobId,jdbcType=INTEGER}, #{dataDate,jdbcType=VARCHAR}, #{priorty,jdbcType=INTEGER},#{hostName,jdbcType=VARCHAR})
     </insert>
 
     <update id="update" parameterType="com.mongohua.etl.model.JobQueue">
@@ -41,6 +42,9 @@
             </if>
             <if test="priorty != null and priorty !=0">
                 priorty = #{priorty, jdbcType=VARCHAR},
+            </if>
+            <if test="hostName != null" >
+                host_name=#{hostName, jdbcType=VARCHAR},
             </if>
         </trim>
         where queue_id = #{queueId, jdbcType=INTEGER}
@@ -58,6 +62,9 @@
             <if test="priorty != null and priorty !=0" >
                 priorty,
             </if>
+            <if test="hostName != null" >
+                host_name,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="jobId != null and jobId !=0" >
@@ -68,6 +75,9 @@
             </if>
             <if test="priorty != null and priorty !=0" >
                 #{priorty,jdbcType=INTEGER},
+            </if>
+            <if test="hostName != null" >
+                #{hostName, jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>

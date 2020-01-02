@@ -62,6 +62,11 @@ public class JobDef extends Cycle{
      */
     private Integer userId;
 
+    /**
+     * 作业运行服务地址
+     */
+    private String hostName;
+
     public int getLastStatus() {
         return lastStatus;
     }
@@ -164,5 +169,13 @@ public class JobDef extends Cycle{
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 }

@@ -54,6 +54,7 @@ var TOOL_BAR = [ {
             $("#jobId").val(selectedArray[0].jobId);
             $("#dataDate").datebox("setValue",selectedArray[0].dataDate);
             $("#priorty").val(selectedArray[0].priorty);
+            $("#hostName").combobox("setValue", selectedArray[0].hostName);
             openWind('add_window','修改队列');
         }else {
             $.messager.alert('提示', '请选择一条记录!', 'info');  //提示信息
@@ -90,6 +91,12 @@ $(function() {
         }
     })
 
+    $("#hostName").combobox({
+        valueField: 'hostIp',
+        textField: 'hostName',
+        url:'/host/list'
+    })
+
     $('#save').click(function() {
         var url = "queue_add";
         var param = {}
@@ -97,6 +104,7 @@ $(function() {
         var jobId = $("#jobId").val();
         var dataDate = $("#dataDate").datebox("getValue");
         var priorty = $("#priorty").val();
+        var hostName = $("#hostName").combobox("getValue");
 
         if (jobId != "") {
             param.jobId = jobId;
@@ -109,6 +117,13 @@ $(function() {
             param.dataDate = dataDate;
         }else {
             $.messager.alert("系统提示","dataDate不能为空","ERROR");
+            return ;
+        }
+
+        if(hostName != "") {
+            param.hostName = hostName;
+        } else {
+            $.messager.alert("系统提示","服务器ip不能为空","ERROR");
             return ;
         }
 
@@ -148,7 +163,8 @@ $(function() {
             { field:'queueId',title:'队列ID',width:80,sortable:true,align:'center'},
             { field:'jobId',title:'作业编号',width:80,sortable:true,align:'center'},
             { field:'dataDate',title:'数据日期',width:120,sortable:true,align:'center'},
-            { field:'priorty',title:'优先级',width:120,align:'center'}
+            { field:'priorty',title:'优先级',width:120,align:'center'},
+            { field:'hostName',title:'服务器ip',width:120,align:'center'}
         ]]
     });
 });

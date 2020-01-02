@@ -45,6 +45,11 @@ public class JobInst {
      */
     private String jobCode;
 
+    /**
+     * 作业运行地址
+     */
+    private String hostName;
+
     public int getInstId() {
         return instId;
     }
@@ -115,5 +120,13 @@ public class JobInst {
 
     public void setJobCode(String jobCode) {
         this.jobCode = jobCode;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 }

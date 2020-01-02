@@ -180,6 +180,7 @@ function loadJobDetail(data) {
                 else if (val == 3) return "年";
                 else if (val == 4) return "分";
             }},
+            { field:'hostName',title:'服务器ip',width:80,sortable:true,align:'center'},
             { field:'jobValid', title:'是否有效',width:80,align:'center',formatter:function(val, row,index) {
                 if (val == 1) return "<span style=\"color:green\" >有效</span>";
                 else  return "<span style=\"color:red\" >无效</span>";
@@ -299,6 +300,12 @@ function loadEditJobDetail(data) {
             { field:'cronDesc', title:'作业调度',width:80,align:'center',editor:{type:'validatebox',options:{
                 required:true,
             }}},
+            { field:'hostName',title:'服务器ip',width:80,sortable:true,align:'center',editor:{type:'combobox',options:{
+                        valueField: 'hostIp',
+                        textField: 'hostName',
+                        url:'/host/list',
+                    }
+                }},
             { field:'jobValid', title:'是否有效',width:80,align:'center',formatter:function(val, row,index) {
                 if (val == 1) return "<span style=\"color:green\" >有效</span>";
                 else  return "<span style=\"color:red\" >无效</span>";

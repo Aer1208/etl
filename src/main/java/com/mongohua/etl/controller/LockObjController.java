@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mongohua.etl.schd.common.JobReadWriterLock;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,11 +20,14 @@ import java.util.Map;
 @RequestMapping(value = "/monitor")
 public class LockObjController {
 
+    @Autowired
+    private JobReadWriterLock distributedReadWriterLock;
+
     @RequestMapping(value = "/lock_list", produces = "application/json;charset=utf-8")
     @ResponseBody
     public Object lockList() {
-        Map<String, Integer> writerLock = JobReadWriterLock.getInstance().getWriterLock();
-        Map<String, Integer> readerLock = JobReadWriterLock.getInstance().getReadLock();
+        Map<String, Integer> writerLock = distributedReadWriterLock.getWriterLock();
+        Map<String, Integer> readerLock = distributedReadWriterLock.getReadLock();
         Iterator<String> writerKeys = writerLock.keySet().iterator();
         JSONArray jsonArray = new JSONArray();
         // 写锁

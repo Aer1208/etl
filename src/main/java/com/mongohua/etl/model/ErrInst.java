@@ -51,6 +51,11 @@ public class ErrInst extends Cycle{
      */
     private Date endTime;
 
+    /**
+     * 作业运行服务地址
+     */
+    private String hostName;
+
     public int getInstId() {
         return instId;
     }
@@ -113,5 +118,13 @@ public class ErrInst extends Cycle{
 
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 }

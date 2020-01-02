@@ -77,6 +77,11 @@ public class DsDef extends Cycle{
      */
     private int userId;
 
+    /**
+     * 数据源运行服务地址
+     */
+    private String hostName;
+
     public int getScheduleStatus() {
         return scheduleStatus;
     }
@@ -211,5 +216,13 @@ public class DsDef extends Cycle{
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 }

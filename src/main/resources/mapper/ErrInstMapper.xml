@@ -13,6 +13,7 @@
         <result column="cron_desc" property="cronDesc" jdbcType="VARCHAR" />
         <result column="job_cycle" property="jobCycle" jdbcType="INTEGER" />
         <result column="cycle_unit" property="cycleUnit" jdbcType="INTEGER" />
+        <result column="host_name" property="hostName" jdbcType="VARCHAR" />
     </resultMap>
 
     <select id="getList" resultMap="ErrInstMap" parameterType="HashMap">
@@ -27,7 +28,8 @@
               b.end_time,
               ifnull(c.cron_desc, d.cron_desc) cron_desc,
               ifnull(c.job_cycle,d.job_cycle) job_cycle,
-              ifnull(c.cycle_unit,d.cycle_unit) cycle_unit
+              ifnull(c.cycle_unit,d.cycle_unit) cycle_unit,
+              a.host_name
         from t_err_inst a
               join t_job_inst b on a.inst_id=b.inst_id
               left join t_job_def c on b.job_id=c.job_id

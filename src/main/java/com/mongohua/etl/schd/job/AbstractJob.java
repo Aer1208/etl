@@ -40,6 +40,9 @@ public abstract class AbstractJob extends InitJdbc implements Job {
     @Autowired
     protected Environment environment;
 
+    @Autowired
+    private JobReadWriterLock distributedReadWriterLock;
+
     /**
      * 根据jobId获取数据源或者普通作业对象
      * @param jobId
@@ -72,19 +75,22 @@ public abstract class AbstractJob extends InitJdbc implements Job {
             }
         }
 
+        final String hostName = environment.getProperty("host_name");
+
         // 执行之前记录日志
         KeyHolder keyHolder = new GeneratedKeyHolder();
         synchronized (LOCK) {
             jdbcTemplate.update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                    PreparedStatement ps = connection.prepareStatement("insert into t_job_inst (job_id,data_date,start_time,end_time,status) values (?,?,?,?,?)",
+                    PreparedStatement ps = connection.prepareStatement("insert into t_job_inst (job_id,data_date,start_time,end_time,status,host_name) values (?,?,?,?,?,?)",
                             Statement.RETURN_GENERATED_KEYS);
                     ps.setInt(1, jobId);
                     ps.setString(2, vDate);
                     ps.setTimestamp(3, new java.sql.Timestamp(Util.getCurrentTime()));
                     ps.setTimestamp(4, new java.sql.Timestamp(Util.getCurrentTime()));
                     ps.setInt(5, 2);
+                    ps.setString(6,hostName);
                     return ps;
                 }
             }, keyHolder);
@@ -92,11 +98,11 @@ public abstract class AbstractJob extends InitJdbc implements Job {
         long instPkId = keyHolder.getKey().longValue();
         String[] args = getArgs(jobId,vDate);
         String cmdStr = Util.hidePassword(Arrays.toString(args));
-        logger.info("running [job_id={},inst_id={},data_date={},params={}]",jobId,instPkId,vDate, cmdStr);
+        logger.info("running [{}][job_id={},inst_id={},data_date={},params={}]",hostName,jobId,instPkId,vDate, cmdStr);
         try {
             Executor executor = new Executor();
             executor.exec(args,getEnvp());
-            logger.info("finished [job_id={},inst_id={},data_date={},params={},ret={}]",jobId,instPkId,vDate,cmdStr,executor.getCode());
+            logger.info("finished [{}][job_id={},inst_id={},data_date={},params={},ret={}]",hostName,jobId,instPkId,vDate,cmdStr,executor.getCode());
             after(executor,instPkId,jobId,vDate);
         } catch (IOException e) {
             e.printStackTrace();
@@ -108,7 +114,8 @@ public abstract class AbstractJob extends InitJdbc implements Job {
             e.printStackTrace();
             afterError(instPkId, e.getMessage());
         } finally {
-            JobReadWriterLock.getInstance().unlock(jobId, vDate);
+//            JobReadWriterLock.getInstance().unlock(jobId, vDate);
+            distributedReadWriterLock.unlock(jobId, vDate);
         }
 
     }
@@ -140,9 +147,10 @@ public abstract class AbstractJob extends InitJdbc implements Job {
     }
 
     public void afterError(long instId, String ret) {
+        String hostName = environment.getProperty("host_name");
         insertLog(instId, ret);
         updateJobStatus(instId,0);
-        jdbcTemplate.update("insert into t_err_inst (inst_id,status) values(?,?)",instId,0);
+        jdbcTemplate.update("insert into t_err_inst (inst_id,status,host_name) values(?,?,?)",instId,0,hostName);
     }
 
     public void afterSucc(long instId, String ret,int jobId,String vDate) {
