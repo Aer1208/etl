@@ -36,7 +36,7 @@ public class EtlShiroRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        System.out.println("权限配置-->MyShiroRealm.doGetAuthorizationInfo()");
+//        System.out.println("权限配置-->MyShiroRealm.doGetAuthorizationInfo()");
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         User user = (User)principalCollection.getPrimaryPrincipal();
         if (user == null) {

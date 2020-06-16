@@ -51,6 +51,19 @@ public class ErrInst extends Cycle{
      */
     private Date endTime;
 
+    /**
+     * 归属用户
+     */
+    private String userName;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public int getInstId() {
         return instId;
     }

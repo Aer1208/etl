@@ -87,7 +87,7 @@ $(function() {
                 if (val ==1) return "数据源"
                 if (val ==2) return "作业"
             }},
-            { field:'jobId',title:'优先级',width:120,align:'center'},
+            { field:'userName',title:'责任人',width:120,align:'center'},
             { field:'jobId',title:'作业ID',width:80,sortable:true,align:'center'},
             { field:'dataDate',title:'数据日期',width:80,align:'center'},
             { field:'startTime',title:'开始日期',width:120,align:'center',formatter:function(val,row,index){

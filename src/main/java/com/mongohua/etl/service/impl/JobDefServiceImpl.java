@@ -9,12 +9,13 @@ import com.mongohua.etl.mapper.JobParamDefMapper;
 import com.mongohua.etl.mapper.JobRefMapper;
 import com.mongohua.etl.model.*;
 import com.mongohua.etl.schd.NotRefSchedule;
-import com.mongohua.etl.schd.job.Job;
+import com.mongohua.etl.schd.common.InitDataBase;
 import com.mongohua.etl.service.JobDefService;
 import com.mongohua.etl.utils.PageModel;
 import com.mongohua.etl.utils.SecurityUtil;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,8 @@ import java.util.List;
  */
 @Service
 public class JobDefServiceImpl implements JobDefService {
+
+    private final static Logger logger = LoggerFactory.getLogger(JobDefServiceImpl.class);
 
     @Autowired
     private JobDefMapper jobDefMapper;
@@ -225,6 +228,22 @@ public class JobDefServiceImpl implements JobDefService {
 
     @Override
     public int update(JobDef jobDef) {
-        return jobDefMapper.update(jobDef);
+        int res = jobDefMapper.update(jobDef);
+        JobDef memoryJobDef = InitDataBase.jobDefMap.get(jobDef.getJobId());
+        List<JobRef> jobRefs = InitDataBase.jobRefMap.get(jobDef.getJobId());
+        if (res > 0 ) {
+            if (jobDef.getJobValid() == 0 && memoryJobDef != null && memoryJobDef.getJobValid() == 1) {
+                if (jobRefs == null ) {
+                    logger.info("作业【job_id={}】修改成功，并且作业置为失效，触发作业停止调度", jobDef.getJobId());
+                    // 如果修改成功，并且调度置为无效，则停止调度
+                    notRefSchedule.stopNotRefJob(jobDef);
+                }
+            }
+//            else if (jobDef.getJobValid() == 1 ) {
+//                // 如果修改成功，并且调度置为有效，则启动调度
+//                notRefSchedule.startNotRefJob(jobDef);
+//            }
+        }
+        return res;
     }
 }

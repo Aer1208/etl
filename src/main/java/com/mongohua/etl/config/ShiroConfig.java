@@ -3,6 +3,7 @@ package com.mongohua.etl.config;
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import com.mongohua.etl.utils.Constant;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.mgt.CachingSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
@@ -74,6 +75,7 @@ public class ShiroConfig {
     @DependsOn("lifecycleBeanPostProcessor")
     public EtlShiroRealm etlShiroRealm(){
         EtlShiroRealm myShiroRealm = new EtlShiroRealm();
+        myShiroRealm.setCachingEnabled(false);
         myShiroRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         return myShiroRealm;
     }

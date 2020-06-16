@@ -36,7 +36,7 @@ var TOOL_BAR = [ {
             $("#dsName").val(selectedArray[0].dsName);
             $("#srcTabName").val(selectedArray[0].srcTabName);
             $("#srcDbName").val(selectedArray[0].srcDbName);
-            $("#srcDbType").val(selectedArray[0].srcDbType);
+            $("#srcDbType").combobox("setValue", selectedArray[0].srcDbType);
             $("#srcServIp").val(selectedArray[0].srcServIp);
             $("#srcServPort").val(selectedArray[0].srcServPort);
             $("#targetPath").val(selectedArray[0].targetPath);

@@ -3,9 +3,14 @@ package com.mongohua.etl.service.impl;
 import com.mongohua.etl.mapper.DsDefMapper;
 import com.mongohua.etl.model.DsDef;
 import com.mongohua.etl.schd.DsSchedule;
+import com.mongohua.etl.schd.common.InitDataBase;
 import com.mongohua.etl.service.DsDefService;
 import com.mongohua.etl.utils.PageModel;
 import com.mongohua.etl.utils.SecurityUtil;
+import groovy.util.logging.Slf4j;
+import org.apache.shiro.config.Ini;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +23,8 @@ import java.util.List;
  */
 @Service
 public class DsDefServiceImpl implements DsDefService {
+
+    private final static Logger logger = LoggerFactory.getLogger(DsDefServiceImpl.class);
 
     @Autowired
     private DsDefMapper dsDefMapper;
@@ -88,12 +95,27 @@ public class DsDefServiceImpl implements DsDefService {
         if (valid == 1) {
             return dsDefMapper.dsValid(dsIds);
         } else {
+            for ( String dsId: dsIds ) {
+                DsDef dsDef = InitDataBase.dsDefMap.get(Integer.parseInt(dsId));
+                logger.info("changeDsValid数据源【ds={}】修改成功，并且置为失效，触发调度停止...", dsDef.getDsId());
+                dsSchedule.cancel(dsDef);
+            }
             return dsDefMapper.dsInvalid(dsIds);
         }
     }
 
     @Override
     public int update(DsDef dsDef) {
-        return dsDefMapper.update(dsDef);
+        int res = dsDefMapper.update(dsDef);
+        DsDef memoryDsdef = InitDataBase.dsDefMap.get(dsDef.getDsId());
+        if (res > 0 ) {
+            if (dsDef.getDsValid() == 0 && memoryDsdef != null && memoryDsdef.getDsValid() == 1 ) {
+                // 如果修改成功，并且调度置为失效，则将调度停止
+                logger.info("update数据源【ds={}】修改成功，并且置为失效，触发调度停止...", dsDef.getDsId());
+                dsSchedule.cancel(dsDef);
+            }
+        }
+        return res;
     }
+
 }

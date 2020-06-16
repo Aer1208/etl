@@ -21,5 +21,19 @@ public class Test {
         System.out.println(p.matcher("12 2:2s").matches());
 
         System.out.println(Md5Utils.encode("hello",1).toUpperCase());
+
+        System.out.println(LockType.WRITER.name());
+
+        System.out.println("INSERT INTO t_job_queue (job_id,data_date,priorty) " +
+                "                   SELECT b.job_id,b.data_date,10000 " +
+                "                     FROM t_err_inst a" +
+                "                           JOIN t_job_inst b ON a.inst_id=b.inst_id" +
+                "                    WHERE a.status=1" +
+                "                      AND a.host_name='?' 10.203.20.7");
     }
+}
+
+enum LockType {
+    READ,
+    WRITER
 }

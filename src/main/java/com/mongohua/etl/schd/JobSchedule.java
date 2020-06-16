@@ -151,6 +151,8 @@ public class JobSchedule extends InitJdbc{
                     //删除队列
                     jdbcTemplate.update("delete from t_job_queue where queue_id=?", queueId);
 
+                    logger.info("removed queue info [job_id={}, data_date={}]", jobId, vDate);
+
                     jobThreadPool.execute(new Runnable(){
                         // 开始启动执行作业线程
                         @Override
@@ -172,7 +174,7 @@ public class JobSchedule extends InitJdbc{
                                 Job job = (Job)SpringContextUtil.getBean("sqoopJob");
                                 job.run(jobId, vDate);
                             } else  {
-                                logger.warn("job_id={} not run, please check configure for job and ds");
+                                logger.warn("job_id={} not run, please check configure for job and ds", jobId);
                             }
                         }
                     });
