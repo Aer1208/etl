@@ -107,7 +107,8 @@ $(function () {
                    return rowText.indexOf(q.toUpperCase()) == 0 || row[opts.valueField].toString().indexOf(q) ==0;
                }
            }}},
-           { field:'refType',title:'作业依赖类型',width:80,sortable:true,align:'center',editor:{type:'combobox',options:refTypeOption}}
+           { field:'refType',title:'作业依赖类型',width:80,sortable:true,align:'center',editor:{type:'combobox',options:refTypeOption}},
+           { field:'weekOffset', title:'星期几运行', width:80, sortable:true, align:'center', editor:{type:'combobox', options:weekOption}}
        ]],
        toolbar:[{
            iconCls:'icon-add',
@@ -124,7 +125,7 @@ $(function () {
                        return ;
                    }
                }
-               $("#jobref_tt").datagrid('appendRow',{jobId:$('#jobId').val(),refType:1});
+               $("#jobref_tt").datagrid('appendRow',{jobId:$('#jobId').val(),refType:1,weekOffset:0});
                $("#jobref_tt").datagrid('beginEdit',$("#jobref_tt").datagrid("getRows").length-1);
                jobRefIndex = $("#jobref_tt").datagrid("getRows").length-1;
            }

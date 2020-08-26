@@ -179,6 +179,8 @@ function loadJobDetail(data) {
                 else if (val == 2) return "月";
                 else if (val == 3) return "年";
                 else if (val == 4) return "分";
+                else if (val == 5) return "周";
+                else if (val == 6) return  "季";
             }},
             { field:'jobValid', title:'是否有效',width:80,align:'center',formatter:function(val, row,index) {
                 if (val == 1) return "<span style=\"color:green\" >有效</span>";
@@ -207,7 +209,8 @@ function loadJobDetail(data) {
             { checkbox:true},
             { field:'jobId',title:'作业编号',width:80,sortable:true,align:'center'},
             { field:'refJobId',title:'依赖作业ID',width:80,sortable:true,align:'center'},
-            { field:'refType',title:'作业依赖类型',width:80,sortable:true,align:'center'}
+            { field:'refType',title:'作业依赖类型',width:80,sortable:true,align:'center'},
+            { field:'weekOffset',title:'星期偏移量',width:80,sortable:true,align:'center'}
         ]]
     })
 
@@ -275,27 +278,9 @@ function loadEditJobDetail(data) {
                 else if (val == 2) return "月";
                 else if (val == 3) return "年";
                 else if (val == 4) return "分";
-            },editor:{type:'combobox',options:{
-                valueField: 'value',
-                textField: 'label',
-                value:1,
-                data:[{
-                    label:"小时",
-                    value:0
-                },{
-                    label:"天",
-                    value:1
-                },{
-                    label:"月",
-                    value:2
-                },{
-                    label:"年",
-                    value:3
-                },{
-                    label:'分',
-                    value:4
-                }]
-            }}},
+                else if (val == 5) return "周";
+                else if (val == 6) return  "季";
+            },editor:{type:'combobox',options:cycleOption}},
             { field:'cronDesc', title:'作业调度',width:80,align:'center',editor:{type:'validatebox',options:{
                 required:true,
             }}},
@@ -477,14 +462,15 @@ function loadEditJobDetail(data) {
                     return rowText.indexOf(q.toUpperCase()) == 0 || row[opts.valueField].toString().indexOf(q) ==0;
                 }
             }}},
-            { field:'refType',title:'作业依赖类型',width:80,sortable:true,align:'center',editor:{type:'combobox',options:refTypeOption}}
+            { field:'refType',title:'作业依赖类型',width:80,sortable:true,align:'center',editor:{type:'combobox',options:refTypeOption}},
+            { field:'weekOffset', title:'星期几运行', width:80, sortable:true, align:'center', editor:{type:'combobox', options:weekOption}}
         ]],
         toolbar:[{
             iconCls:'icon-add',
             handler:function () {
                 if ($("#edit_jobref_tt-" + data.jobId).datagrid("validateRow",editJobRefIndex)) {
                     $("#edit_jobref_tt-" + data.jobId).datagrid('endEdit',editJobRefIndex);
-                    $("#edit_jobref_tt-" + data.jobId).datagrid('appendRow',{jobId:data.jobId,refType:1});
+                    $("#edit_jobref_tt-" + data.jobId).datagrid('appendRow',{jobId:data.jobId,refType:1,weekOffset:0});
                     editJobRefIndex = $("#edit_jobref_tt-" + data.jobId).datagrid("getRows").length-1;
                     $("#edit_jobref_tt-" + data.jobId).datagrid('beginEdit',editJobRefIndex);
                 } else {

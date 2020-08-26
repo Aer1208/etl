@@ -18,6 +18,11 @@ public class JobRef {
      */
     private int refType;
 
+    /**
+     * 星期几运行
+     */
+    private int weekOffset;
+
     public int getJobId() {
         return jobId;
     }
@@ -40,5 +45,13 @@ public class JobRef {
 
     public void setRefType(int refType) {
         this.refType = refType;
+    }
+
+    public int getWeekOffset() {
+        return weekOffset;
+    }
+
+    public void setWeekOffset(int weekOffset) {
+        this.weekOffset = weekOffset;
     }
 }

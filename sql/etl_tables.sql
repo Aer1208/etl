@@ -156,6 +156,7 @@ CREATE TABLE `t_job_ref` (
   `JOB_ID` int(11) NOT NULL COMMENT '作业编号',
   `REF_JOB_ID` int(11) NOT NULL COMMENT '依赖作业编号',
   `REF_TYPE` int(11) NOT NULL COMMENT '作业依赖类型',
+  week_offset int(11) comment '星期几'
   PRIMARY KEY (`JOB_ID`,`REF_JOB_ID`,`REF_TYPE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

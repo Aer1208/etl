@@ -47,8 +47,14 @@ var cycleOption={
         label:"天",
         value:1
     },{
+        label:"周",
+        value:5
+    },{
         label:"月",
         value:2
+    },{
+        label:"季",
+        value:6
     },{
         label:"年",
         value:3
@@ -93,6 +99,39 @@ var refTypeOption={
     },{
         label:"年依赖月",
         value:4
+    },{
+        label:"周依赖日",
+        value:5
+    },{
+        label:"季依赖月",
+        value:6
+    }]
+}
+var weekOption={
+    valueField: 'value',
+    textField: 'label',
+    value:0,
+    data:[{
+        label:"星期日",
+        value:0
+    },{
+        label:"星期一",
+        value:1
+    },{
+        label:"星期二",
+        value:2
+    },{
+        label:"星期三",
+        value:3
+    },{
+        label:"星期四",
+        value:4
+    },{
+        label:"星期五",
+        value:5
+    },{
+        label:"星期六",
+        value:6
     }]
 }
 

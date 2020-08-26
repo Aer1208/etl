@@ -140,4 +140,47 @@ public class Util {
         }
     }
 
+	/**
+	 * 计算日期对应周期的星期几
+	 * @param vDate 计算日期
+	 * @param offset 周期偏移量 0：星期天 1-6 星期几
+	 * @return
+	 */
+    public static String getEndWeekDay(String vDate, int offset) {
+    	try {
+			Calendar cal = get(vDate);
+			int dayofweek = cal.get(Calendar.DAY_OF_WEEK) - 1;
+
+			if (offset >= dayofweek) {
+				cal.add(Calendar.DATE, offset - dayofweek);
+			} else {
+				cal.add(Calendar.DATE, offset - dayofweek + 7);
+			}
+			return YYYYMMDD.format(cal.getTime());
+		}catch (ParseException e) {
+    		e.printStackTrace();
+		}
+    	return  "-1";
+	}
+
+	/**
+	 * 获取当前月份所属季度的最后月份
+	 * @param vMonth 月份
+	 */
+	public static String getEndMonthOfQuarter(String vMonth) {
+		try {
+			Calendar cal = get(vMonth);
+			int month = cal.get(Calendar.MONTH) + 1;
+			int quarter = month % 3 == 0 ? month / 3 : month /3 +1;
+			if (quarter <= 3) {
+				return  vMonth.substring(0, 4 ) + "0" + quarter * 3;
+			} else {
+				return vMonth.substring(0, 4) + "12";
+			}
+		}catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return "-1";
+	}
 }
+
